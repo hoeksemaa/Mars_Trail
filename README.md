@@ -1,8 +1,8 @@
 # Mars Trail
 
-- [Description](#Description)
-- [How to Play](#How to Play)
-- [Installation](#Installation)
+- [Description](#description)
+- [How to Play](#how-to-play)
+- [Installation](#installation)
 
 # Description
 ## a text adventure game
