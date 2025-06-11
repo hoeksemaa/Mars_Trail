@@ -13,5 +13,6 @@ yes
 # Installation
 Compile:
 ```./build.sh```
+
 Execute:
 ```./Mars_Trail```
