@@ -12,6 +12,6 @@ yes
 
 # Installation
 Compile:
-```./build.sh
+```./build.sh```
 Execute:
-```./Mars_Trail
+```./Mars_Trail```
