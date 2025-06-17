@@ -2,37 +2,25 @@
 
 #define MAX_CHOICES 4
 
-void greeting();
-void ending();
-
 typedef struct {
 	int fuel;
 	int food;
 	int shields;
 } Ship;
 
-typedef struct {
-	char description[200];
-	int fuel_change;
-	int food_change;
-	int shields_change;
-} Choice;
-
-typedef struct {
-	char title[100];
-	char description[200];
-	Choice choices[MAX_CHOICES];
-	int num_choices;
-} Event;
+void greeting();
+void ending();
+void print_ship_attributes(Ship *ship);
 
 int main() {
 
 	int month = 1;
-	Spaceship Ship = {100, 100, 100};
+	Ship spaceship = {100, 100, 100};
 
 	greeting();
 	while (month < 10) {
 		printf("It's month %d\n", month);
+		print_ship_attributes(&spaceship);
 		month++;
 	}
 	ending();
@@ -46,4 +34,11 @@ void greeting() {
 
 void ending() {
 	printf("That's all Folks!\n");
+}
+
+void print_ship_attributes(Ship *ship) {
+	printf("Ship Status:\n");
+	printf("	Fuel:    %d\n", ship->fuel);
+	printf("	Food:    %d\n", ship->food);
+	printf("	Shields: %d\n", ship->shields);
 }
