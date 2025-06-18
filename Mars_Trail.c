@@ -11,6 +11,7 @@ typedef struct {
 void greeting();
 void ending();
 void print_ship_attributes(Ship *ship);
+void outcome_flee_pirates(Ship *ship);
 
 int main() {
 
@@ -20,6 +21,7 @@ int main() {
 	greeting();
 	while (month < 10) {
 		printf("It's month %d\n", month);
+		outcome_flee_pirates(&spaceship);
 		print_ship_attributes(&spaceship);
 		month++;
 	}
@@ -41,4 +43,9 @@ void print_ship_attributes(Ship *ship) {
 	printf("	Fuel:    %d\n", ship->fuel);
 	printf("	Food:    %d\n", ship->food);
 	printf("	Shields: %d\n", ship->shields);
+}
+
+void outcome_flee_pirates(Ship *ship) {
+	ship->fuel -= 50;
+	ship->food -= 10;
 }
