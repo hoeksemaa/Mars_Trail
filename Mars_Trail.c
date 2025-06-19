@@ -12,6 +12,7 @@ void greeting();
 void ending();
 void print_ship_attributes(Ship *ship);
 void outcome_flee_pirates(Ship *ship);
+void outcome_fight_pirates(Ship *ship);
 
 int main() {
 
@@ -21,7 +22,7 @@ int main() {
 	greeting();
 	while (month < 10) {
 		printf("It's month %d\n", month);
-		outcome_flee_pirates(&spaceship);
+		outcome_fight_pirates(&spaceship);
 		print_ship_attributes(&spaceship);
 		month++;
 	}
@@ -48,4 +49,10 @@ void print_ship_attributes(Ship *ship) {
 void outcome_flee_pirates(Ship *ship) {
 	ship->fuel -= 50;
 	ship->food -= 10;
+}
+
+void outcome_fight_pirates(Ship *ship) {
+	ship->fuel -= 10;
+	ship->food -= 10;
+	ship->shields -= 70;
 }
