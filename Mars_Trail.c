@@ -8,6 +8,18 @@ typedef struct {
 	int shields;
 } Ship;
 
+typedef struct {
+	char description[100];
+	void (*outcome)(Ship *ship);
+} Choice;
+
+typedef struct {
+	char title[50];
+	char description[100];
+	int num_choices;
+	Choice choices[MAX_CHOICES];
+} Event;
+
 void greeting();
 void ending();
 void print_ship_attributes(Ship *ship);
@@ -18,11 +30,21 @@ int main() {
 
 	int month = 1;
 	Ship spaceship = {100, 100, 100};
+	Event pirates = {
+		"PIRATE ATTACK",
+		"The pirates have spotted your ship; they look mean and hungry!",
+		2,
+		{
+			{"Fight", outcome_fight_pirates},
+			{"Flee", outcome_flee_pirates}
+		}	
+	};
 
 	greeting();
 	while (month < 10) {
 		printf("It's month %d\n", month);
-		outcome_fight_pirates(&spaceship);
+		// EVENT STUFF GOES HERE
+		// TOO TIRED TO WRITE IT RN
 		print_ship_attributes(&spaceship);
 		month++;
 	}
