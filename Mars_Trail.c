@@ -8,6 +8,7 @@ typedef struct {
 	int fuel;
 	int food;
 	int shields;
+	int crystals;
 } Ship;
 
 typedef struct {
@@ -17,7 +18,7 @@ typedef struct {
 
 typedef struct {
 	char title[50];
-	char description[100];
+	char description[200];
 	int num_choices;
 	Choice choices[MAX_CHOICES];
 } Event;
@@ -27,6 +28,8 @@ void ending();
 void print_ship_attributes(Ship *ship);
 void outcome_flee_pirates(Ship *ship);
 void outcome_fight_pirates(Ship *ship);
+void outcome_rob_pizza(Ship *ship);
+void outcome_buy_pizza(Ship *ship);
 Event* initialize_events();
 Event* get_random_event(Event* events, int num_events);
 int get_user_choice(Event* event);
@@ -34,9 +37,9 @@ int get_user_choice(Event* event);
 int main() {
 
 	int month = 1;
-	Ship spaceship = {100, 100, 100};
+	Ship spaceship = {100, 100, 100, 100};
 	Event* events = initialize_events();
-	int num_events = 1;
+	int num_events = 2;
 	int user_choice;
 	Event* current_event;
 
@@ -73,9 +76,10 @@ void ending() {
 
 void print_ship_attributes(Ship *ship) {
 	printf("Ship Status:\n");
-	printf("	Fuel:    %d\n", ship->fuel);
-	printf("	Food:    %d\n", ship->food);
-	printf("	Shields: %d\n", ship->shields);
+	printf("	Fuel:     %d\n", ship->fuel);
+	printf("	Food:     %d\n", ship->food);
+	printf("	Shields:  %d\n", ship->shields);
+	printf("        Crystals: %d\n", ship->crystals);
 }
 
 void outcome_flee_pirates(Ship *ship) {
@@ -89,6 +93,15 @@ void outcome_fight_pirates(Ship *ship) {
 	ship->shields -= 70;
 }
 
+void outcome_rob_pizza(Ship *ship) {
+	ship->food += 50;
+}
+
+void outcome_buy_pizza(Ship *ship) {
+	ship->food += 50;
+	ship->crystals -= 50;
+}
+
 Event* initialize_events() {
 	static Event game_events[MAX_EVENTS];
 
@@ -99,6 +112,16 @@ Event* initialize_events() {
 		{
 			{"Fight", outcome_fight_pirates},
 			{"Flee", outcome_flee_pirates}
+		}
+	};
+
+	game_events[1] = (Event){
+		"PAPA ZORB'S PIZZA",
+		"You spot a rusty red shack nestled in an asteroid. \"Welcome to Papa Zorb's, home of the glorpiest pizza in the galaxy. What can i getcha?\"",
+		2,
+		{
+			{"Rob the pizza", outcome_rob_pizza},
+			{"Buy the pizza", outcome_buy_pizza}
 		}
 	};
 
