@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #define MAX_CHOICES 4
 #define MAX_EVENTS 10
@@ -24,7 +25,8 @@ typedef struct {
 } Event;
 
 void greeting();
-void ending();
+void good_ending();
+void bad_ending();
 void print_ship_attributes(Ship *ship);
 void outcome_flee_pirates(Ship *ship);
 void outcome_fight_pirates(Ship *ship);
@@ -33,6 +35,7 @@ void outcome_buy_pizza(Ship *ship);
 Event* initialize_events();
 Event* get_random_event(Event* events, int num_events);
 int get_user_choice(Event* event);
+bool is_ship_alive(Ship *ship);
 
 int main() {
 
@@ -48,6 +51,8 @@ int main() {
 	greeting();
 	while (month < 10) {
 		printf("It's month %d\n", month);
+
+		print_ship_attributes(&spaceship);
 		
 		current_event = get_random_event(events, num_events);
 		
@@ -57,11 +62,18 @@ int main() {
 		user_choice = get_user_choice(current_event);
 		current_event->choices[user_choice - 1].outcome(&spaceship);
 
-		print_ship_attributes(&spaceship);
+		if (is_ship_alive(&spaceship) == false) {
+			bad_ending();
+			break;
+		}
 		
 		month++;
 	}
-	ending();
+	
+	// the ship survived through all 9 months, so trigger the good ending
+	if (month == 10) {
+		good_ending();	
+	}
 	
 	return 0;
 }
@@ -70,8 +82,12 @@ void greeting() {
 	printf("Get ur ass in that spaceship\n");
 }
 
-void ending() {
-	printf("That's all Folks!\n");
+void good_ending() {
+	printf("You safely touch down on the planet Mars! You become national heros back at home. Unfortunately, you're not back at home.\n");
+}
+
+void bad_ending() {
+	printf("A crack splits your ship. As you're thrown into space and feel the air ripped from your lungs, you notice the stars look beautiful tonight.\n");
 }
 
 void print_ship_attributes(Ship *ship) {
@@ -107,7 +123,7 @@ Event* initialize_events() {
 
 	game_events[0] = (Event){
 		"PIRATE ATTACK",
-		"The pirates have spotted your ship, and they look mean and hungry!",
+		"The pirates have spotted your ship, and they look mean and hungry!\n",
 		2,
 		{
 			{"Fight", outcome_fight_pirates},
@@ -117,7 +133,7 @@ Event* initialize_events() {
 
 	game_events[1] = (Event){
 		"PAPA ZORB'S PIZZA",
-		"You spot a rusty red shack nestled in an asteroid. \"Welcome to Papa Zorb's, home of the glorpiest pizza in the galaxy. What can i getcha?\"",
+		"You spot a rusty red shack nestled in an asteroid. \"Welcome to Papa Zorb's, home of the glorpiest pizza in the galaxy. What can i getcha?\"\n",
 		2,
 		{
 			{"Rob the pizza", outcome_rob_pizza},
@@ -145,4 +161,12 @@ int get_user_choice(Event* event) {
 	scanf("%d", &user_choice);
 
 	return user_choice;
+}
+
+bool is_ship_alive(Ship *ship) {
+	if (ship->shields < 0) {
+		return false;
+	} else {
+		return true;
+	}
 }
