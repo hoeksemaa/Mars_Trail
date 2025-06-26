@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 #define MAX_CHOICES 4
 #define MAX_EVENTS 10
@@ -58,6 +59,10 @@ void outcome_insult_them(Ship *ship);
 void outcome_trade_small_fuel(Ship *ship);
 void outcome_trade_small_fuel(Ship *ship);
 
+// wormhole
+void outcome_keep_flying(Ship *ship);
+void outcome_go_in(Ship *ship);
+
 Event* initialize_events();
 Event* get_random_event(Event* events, int num_events);
 int get_user_choice(Event* event);
@@ -68,7 +73,7 @@ int main() {
 	int month = 1;
 	Ship spaceship = {100, 100, 100, 100, 0, 100, 0};
 	Event* events = initialize_events();
-	int num_events = 5;
+	int num_events = 6;
 	int user_choice;
 	Event* current_event;
 
@@ -87,6 +92,15 @@ int main() {
 
 		user_choice = get_user_choice(current_event);
 		current_event->choices[user_choice - 1].outcome(&spaceship);
+
+		printf("TITLE:       %s", current_event->title);
+		printf("\n");
+		printf("USER CHOICE: %d", user_choice);
+		printf("\n");
+
+		if (strcmp(current_event->title, "WORMHOLE") == 0 && user_choice == 2) {
+			month += 2;
+		}
 
 		if (is_ship_alive(&spaceship) == false) {
 			bad_ending();
@@ -200,6 +214,14 @@ void outcome_trade_large_fuel(Ship *ship) {
 	ship->tires += 1;
 }
 
+void outcome_keep_flying(Ship *ship) {
+	ship->fuel -= 10;
+}
+
+void outcome_go_in(Ship *ship) {
+	ship->fuel += 10;
+}
+
 Event* initialize_events() {
 	static Event game_events[MAX_EVENTS];
 
@@ -255,6 +277,16 @@ Event* initialize_events() {
 			{"They look funny! Call them the worst word you know.", outcome_insult_them},
 			{"We can spare a little", outcome_trade_small_fuel},
 			{"Fuck it; take almost everything", outcome_trade_large_fuel}
+		}
+	};
+
+	game_events[5] = (Event){
+		"WORMHOLE",
+		"The ship sensors pick up a wormhole; it's barely within their range. Who knows where it will lead. Steer into it?",
+		2,
+		{
+			{"Not worth it. Maintain course", outcome_keep_flying},
+			{"Cowabunga dude!", outcome_go_in}
 		}
 	};
 
