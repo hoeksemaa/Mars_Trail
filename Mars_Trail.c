@@ -13,6 +13,7 @@ typedef struct {
 	int crystals;
 	int cigarettes;
 	int morale;
+	int tires;
 } Ship;
 
 typedef struct {
@@ -22,7 +23,7 @@ typedef struct {
 
 typedef struct {
 	char title[50];
-	char description[200];
+	char description[300];
 	int num_choices;
 	Choice choices[MAX_CHOICES];
 } Event;
@@ -32,18 +33,30 @@ void good_ending();
 void bad_ending();
 void print_ship_attributes(Ship *ship);
 
-// all Event outcomes
+// pirate outcomes
 void outcome_flee_pirates(Ship *ship);
 void outcome_fight_pirates(Ship *ship);
+
+// pizza outcomes
 void outcome_rob_pizza(Ship *ship);
 void outcome_buy_pizza(Ship *ship);
 void outcome_leave(Ship *ship);
+
+// smoking outcomes
 void outcome_chew_him_out(Ship *ship);
 void outcome_smoke_together(Ship *ship);
 void outcome_dont_care(Ship *ship);
+
+// fuel tanker outcomes
 void outcome_give_nothing(Ship *ship);
 void outcome_give_food(Ship *ship);
 void outcome_give_cigarette(Ship *ship);
+
+// alien capitalists outcomes
+void outcome_trade_nothing(Ship *ship);
+void outcome_insult_them(Ship *ship);
+void outcome_trade_small_fuel(Ship *ship);
+void outcome_trade_small_fuel(Ship *ship);
 
 Event* initialize_events();
 Event* get_random_event(Event* events, int num_events);
@@ -53,13 +66,13 @@ bool is_ship_alive(Ship *ship);
 int main() {
 
 	int month = 1;
-	Ship spaceship = {100, 100, 100, 100, 0, 100};
+	Ship spaceship = {100, 100, 100, 100, 0, 100, 0};
 	Event* events = initialize_events();
-	int num_events = 4;
+	int num_events = 5;
 	int user_choice;
 	Event* current_event;
 
-	srand(0);
+	srand(12345);
 
 	greeting();
 	while (month < 10) {
@@ -111,6 +124,7 @@ void print_ship_attributes(Ship *ship) {
 	printf("        Crystals:   %*d\n", MAX_WIDTH, ship->crystals);
 	printf("        Cigarettes: %*d\n", MAX_WIDTH, ship->cigarettes);
 	printf("        Morale:     %*d\n", MAX_WIDTH, ship->morale);
+	printf("        Tires:      %*d\n", MAX_WIDTH, ship->tires);
 }
 
 void outcome_flee_pirates(Ship *ship) {
@@ -166,6 +180,26 @@ void outcome_give_cigarette(Ship *ship) {
 	ship->fuel += 300;
 }
 
+void outcome_trade_nothing(Ship *ship) {
+	ship->fuel -= 10;
+}
+
+void outcome_insult_them(Ship *ship) {
+	ship->shields -= 90;
+	ship->fuel -= 30;
+	ship->morale += 30;
+}
+
+void outcome_trade_small_fuel(Ship *ship) {
+	ship->fuel -= 10;
+	ship->shields += 20;
+}
+
+void outcome_trade_large_fuel(Ship *ship) {
+	ship->fuel -= 200;
+	ship->tires += 1;
+}
+
 Event* initialize_events() {
 	static Event game_events[MAX_EVENTS];
 
@@ -209,6 +243,18 @@ Event* initialize_events() {
 			{"Sorry; supplies are tight", outcome_give_nothing},
 			{"Give him a tortilla", outcome_give_food},
 			{"Give him a cigarette", outcome_give_cigarette}
+		}
+	};
+
+	game_events[4] = (Event){
+		"ALIEN CAPITALISTS",
+		"Long-tentacled aliens with 5 large green eyes knock politely on your ship door. \"Wxould yxou lxike txo txrade sxome fxuel txo uxs? wxe wxill cxompensate yxou axs bxest wxe cxan.\" They wait patiently for your reply.",
+		4,
+		{
+			{"Sorry; supplies are tight", outcome_trade_nothing},
+			{"They look funny! Call them the worst word you know.", outcome_insult_them},
+			{"We can spare a little", outcome_trade_small_fuel},
+			{"Fuck it; take almost everything", outcome_trade_large_fuel}
 		}
 	};
 
