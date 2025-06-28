@@ -15,6 +15,9 @@ typedef struct {
 	int cigarettes;
 	int morale;
 	int tires;
+	int pilot;
+	int doctor;
+	int scientist;
 } Ship;
 
 typedef struct {
@@ -63,6 +66,18 @@ void outcome_trade_small_fuel(Ship *ship);
 void outcome_keep_flying(Ship *ship);
 void outcome_go_in(Ship *ship);
 
+// snakes
+void outcome_let_pilot_die(Ship *ship);
+void outcome_kill_doctor_save_pilot(Ship *ship);
+
+// IRS
+//void outcome_flee_irs(Ship *ship);
+//void outcome_fight_irs(Ship *ship);
+//void outcome_pay_taxes(Ship *ship);
+
+// mirror crew
+
+
 Event* initialize_events();
 Event* get_random_event(Event* events, int num_events);
 int get_user_choice(Event* event);
@@ -71,9 +86,9 @@ bool is_ship_alive(Ship *ship);
 int main() {
 
 	int month = 1;
-	Ship spaceship = {100, 100, 100, 100, 0, 100, 0};
+	Ship spaceship = {100, 100, 100, 100, 0, 100, 0, 1, 1, 1};
 	Event* events = initialize_events();
-	int num_events = 6;
+	int num_events = 7;
 	int user_choice;
 	Event* current_event;
 
@@ -139,17 +154,20 @@ void print_ship_attributes(Ship *ship) {
 	printf("        Cigarettes: %*d\n", MAX_WIDTH, ship->cigarettes);
 	printf("        Morale:     %*d\n", MAX_WIDTH, ship->morale);
 	printf("        Tires:      %*d\n", MAX_WIDTH, ship->tires);
+	printf("        Pilot:      %*d\n", MAX_WIDTH, ship->pilot);
+	printf("        Doctor:     %*d\n", MAX_WIDTH, ship->doctor);
+	printf("        Scientist:  %*d\n", MAX_WIDTH, ship->scientist);
 }
 
 void outcome_flee_pirates(Ship *ship) {
-	ship->fuel -= 50;
+	ship->fuel -= 30;
 	ship->food -= 10;
 }
 
 void outcome_fight_pirates(Ship *ship) {
 	ship->fuel -= 10;
 	ship->food -= 10;
-	ship->shields -= 70;
+	ship->shields -= 20;
 }
 
 void outcome_rob_pizza(Ship *ship) {
@@ -222,6 +240,14 @@ void outcome_go_in(Ship *ship) {
 	ship->fuel += 10;
 }
 
+void outcome_let_pilot_die(Ship *ship) {
+	ship->pilot -= 1;
+}
+
+void outcome_kill_doctor_save_pilot(Ship *ship) {
+	ship->doctor -= 1;
+}
+
 Event* initialize_events() {
 	static Event game_events[MAX_EVENTS];
 
@@ -290,6 +316,16 @@ Event* initialize_events() {
 		}
 	};
 
+	game_events[6] = (Event){
+		"SNAKE",
+		"The pilot has suited up in his EVA suit and is changing the spaceship's flat tire. Suddenly, a snake rushes out of the darkness and sinks its teeth into the pilot's ankle! The pilot is beginning to bleed out...",
+		2,
+		{
+			{"Let the pilot die. There's no way to save him", outcome_let_pilot_die},
+			{"Kill the doctor and give his blood to the pilot. It might stabilize him", outcome_kill_doctor_save_pilot}
+		}
+	};
+	
 	return game_events;
 }
 
