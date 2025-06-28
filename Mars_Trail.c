@@ -71,12 +71,15 @@ void outcome_let_pilot_die(Ship *ship);
 void outcome_kill_doctor_save_pilot(Ship *ship);
 
 // IRS
-//void outcome_flee_irs(Ship *ship);
-//void outcome_fight_irs(Ship *ship);
-//void outcome_pay_taxes(Ship *ship);
+void outcome_flee_irs(Ship *ship);
+void outcome_fight_irs(Ship *ship);
+void outcome_bribe_irs(Ship *ship);
+void outcome_pay_irs(Ship *ship);
 
-// mirror crew
-
+// leif erikson
+void outcome_give_him_food(Ship *ship);
+void outcome_follow_map(Ship *ship);
+void outcome_ignore_him(Ship *ship);
 
 Event* initialize_events();
 Event* get_random_event(Event* events, int num_events);
@@ -88,14 +91,16 @@ int main() {
 	int month = 1;
 	Ship spaceship = {100, 100, 100, 100, 0, 100, 0, 1, 1, 1};
 	Event* events = initialize_events();
-	int num_events = 7;
+	int num_events = 9;
 	int user_choice;
 	Event* current_event;
 
 	srand(12345);
-
+	
 	greeting();
 	while (month < 10) {
+
+		system("clear");
 		printf("It's month %d\n", month);
 
 		print_ship_attributes(&spaceship);
@@ -248,6 +253,43 @@ void outcome_kill_doctor_save_pilot(Ship *ship) {
 	ship->doctor -= 1;
 }
 
+void outcome_give_him_food(Ship *ship) {
+	ship->food -= 10;
+	ship->morale += 50;
+}
+
+void outcome_follow_map(Ship *ship) {
+	ship->fuel += 40;
+	ship->morale += 20;
+}
+
+void outcome_ignore_him(Ship *ship) {
+	ship->fuel -= 10;
+}
+
+void outcome_flee_irs(Ship *ship) {
+	ship->crystals -= 100;
+	ship->fuel -= 200;
+	ship->morale -= 10;
+}
+
+void outcome_fight_irs(Ship *ship) {
+	ship->crystals -= 100;
+	ship->doctor -= 1;
+	ship->scientist -= 1;
+	ship->morale -= 10;
+}
+
+void outcome_bribe_irs(Ship *ship) {
+	ship->crystals -= 100;
+	ship->morale -= 100;
+}
+
+void outcome_pay_irs(Ship *ship) {
+	ship->crystals -= 100;
+	ship->morale -= 10;
+}
+
 Event* initialize_events() {
 	static Event game_events[MAX_EVENTS];
 
@@ -323,6 +365,29 @@ Event* initialize_events() {
 		{
 			{"Let the pilot die. There's no way to save him", outcome_let_pilot_die},
 			{"Kill the doctor and give his blood to the pilot. It might stabilize him", outcome_kill_doctor_save_pilot}
+		}
+	};
+
+	game_events[7] = (Event){
+		"VISIT FROM THE IRS",
+		"You're sipping your morning coffee when you hear a loud banging on the ship's entry port. \"THIS IS THE IRS. OUR RECORDS INDICATE YOU HAVE SIGNIFICANT UNPAID TAX LIABILITIES FROM THE PAST FIVE YEARS. YOU WILL LET US IN AND PROVIDE ALL FINANCIAL RECORDS UP TO TWELVE YEARS IN THE PAST.\"",
+		4,
+		{
+			{"We're getting out of here! Engines to max! Flee the scene.", outcome_flee_irs},
+			{"I'm not going down without a fight! Draw your NASA-standard-issue S&W revolver", outcome_fight_irs},
+			{"I'm sure you're mistaken. Make a large contribution to the agent's child's college fund.", outcome_bribe_irs},
+			{"Sigh heavily. Let them in.", outcome_pay_irs}
+		}
+	};
+
+	game_events[8] = (Event){
+		"LEIF ERIKSON",
+		"You find famed explorer Leif Erikson drifting through space, alive and kicking at the ripe age of 1050 years old. He looks up from studying a star map. \"I'm famished! Got anything to eat?\" You notice he's circled a portion of his map and labelled it \"Fuel cloud\"",
+		3,
+		{
+			{"Give him some food. He's probably got some crazy stories", outcome_give_food},
+			{"Track down this fuel cloud", outcome_follow_map},
+			{"Ignore him. He weirds me out", outcome_ignore_him}
 		}
 	};
 	
