@@ -7,11 +7,11 @@
 #define MAX_EVENTS 10
 #define MAX_WIDTH 4
 #define MAX_OUTCOMES 4
-#define MAX_TEXT
+#define MAX_TEXT 100
 
 typedef struct {
-	char description[MAX_TEXT];
 	int probability;
+	char description[MAX_TEXT];
 	int fuel_delta;
 	int food_delta;
 	int shields_delta;
@@ -19,8 +19,8 @@ typedef struct {
 
 typedef struct {
 	char description[MAX_TEXT];
-	Outcome outcomes[MAX_OUTCOMES];
 	int num_outcomes;
+	Outcome outcomes[MAX_OUTCOMES];
 } Choice;
 
 typedef struct {
@@ -40,21 +40,20 @@ typedef struct {
 void greeting();
 void good_ending();
 void bad_ending();
-void print_ship_attributes(Ship *ship);
+void print_gamestate(Gamestate *state);
 
 // pirate outcomes
-void outcome_flee_pirates(Ship *ship);
-void outcome_fight_pirates(Ship *ship);
+void outcome_flee_pirates(Gamestate *state);
+void outcome_fight_pirates(Gamestate *state);
 
 Event* initialize_events();
 Event* get_random_event(Event* events, int num_events);
 int get_user_choice(Event* event);
-bool is_ship_alive(Ship *ship);
+bool is_ship_alive(Gamestate *state);
 
 int main() {
 
-	int month = 1;
-	Ship spaceship = {100, 100, 100};
+	Gamestate state = {1, 100, 100, 100};
 	Event* events = initialize_events();
 	int num_events = 1;
 	int user_choice;
@@ -63,12 +62,12 @@ int main() {
 	srand(12345);
 	
 	greeting();
-	while (month < 10) {
+	while (state.month < 10) {
 
 		system("clear");
-		printf("It's month %d\n", month);
+		printf("It's month %d\n", state.month);
 
-		print_ship_attributes(&spaceship);
+		print_gamestate(&state);
 		
 		current_event = get_random_event(events, num_events);
 		
@@ -115,23 +114,23 @@ void bad_ending() {
 	printf("A crack splits your ship. As you're thrown into space and feel the air ripped from your lungs, you notice the stars look beautiful tonight.\n");
 }
 
-void print_ship_attributes(Ship *ship) {
+void print_gamestate(Gamestate *state) {
 	printf("Ship Status:\n");
-	printf("	Fuel:       %*d\n", MAX_WIDTH, ship->fuel);
-	printf("	Food:       %*d\n", MAX_WIDTH, ship->food);
-	printf("        Shields:    %*d\n", MAX_WIDTH, ship->shields);
+	printf("	Fuel:       %*d\n", MAX_WIDTH, state->fuel);
+	printf("	Food:       %*d\n", MAX_WIDTH, state->food);
+	printf("        Shields:    %*d\n", MAX_WIDTH, state->shields);
 }
 
-void outcome_flee_pirates(Ship *ship) {
-	ship->fuel -= 50;
-	ship->food -= 10;
-	ship->shields -= 10;
+void outcome_flee_pirates(Gamestate *state) {
+	state->fuel -= 50;
+	state->food -= 10;
+	state->shields -= 10;
 }
 
-void outcome_fight_pirates(Ship *ship) {
-	ship->fuel -= 10;
-	ship->food -= 10;
-	ship->shields -= 50;
+void outcome_fight_pirates(Gamestate *state) {
+	state->fuel -= 10;
+	state->food -= 10;
+	state->shields -= 50;
 }
 
 Event* initialize_events() {
@@ -142,8 +141,25 @@ Event* initialize_events() {
 		"The pirates have spotted your ship, and they look mean and hungry!\n",
 		2,
 		{
-			{"Fight", outcome_fight_pirates},
-			{"Flee", outcome_flee_pirates}
+			// fight
+			{
+				"FIGHT",
+				3,
+				{
+					{50, "Minor injuries", 30, 0, 10},
+					{40, "The pirates flee", 10, 0, 0},
+					{10, "Major damage", 30, 0, 50}
+				}
+			},
+			// flee
+			{
+				"FLEE",
+				2,
+				{
+					{80, "Minor injuries", 30, 0, 10},
+					{20, "Get away scott free", 30, 0, 0}
+				}
+			}
 		}
 	};
 
@@ -169,10 +185,10 @@ int get_user_choice(Event* event) {
 	return user_choice;
 }
 
-bool is_ship_alive(Ship *ship) {
-	if (ship->shields < 0) {
-		return false;
-	} else {
+bool is_ship_alive(Gamestate *state) {
+	if (state->shields > 0) {
 		return true;
+	} else {
+		return false;
 	}
 }
