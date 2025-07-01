@@ -18,11 +18,12 @@ typedef struct {
 	int pilot;
 	int doctor;
 	int scientist;
-} Ship;
+	int month;
+} Gamestate;
 
 typedef struct {
 	char description[100];
-	void (*outcome)(Ship *ship);
+	void (*outcome)(Gamestate *state);
 } Choice;
 
 typedef struct {
@@ -35,61 +36,60 @@ typedef struct {
 void greeting();
 void good_ending();
 void bad_ending();
-void print_ship_attributes(Ship *ship);
+void print_state_attributes(Gamestate *state);
 
 // pirate outcomes
-void outcome_flee_pirates(Ship *ship);
-void outcome_fight_pirates(Ship *ship);
+void outcome_flee_pirates(Gamestate *state);
+void outcome_fight_pirates(Gamestate *state);
 
 // pizza outcomes
-void outcome_rob_pizza(Ship *ship);
-void outcome_buy_pizza(Ship *ship);
-void outcome_leave(Ship *ship);
+void outcome_rob_pizza(Gamestate *state);
+void outcome_buy_pizza(Gamestate *state);
+void outcome_leave(Gamestate *state);
 
 // smoking outcomes
-void outcome_chew_him_out(Ship *ship);
-void outcome_smoke_together(Ship *ship);
-void outcome_dont_care(Ship *ship);
+void outcome_chew_him_out(Gamestate *state);
+void outcome_smoke_together(Gamestate *state);
+void outcome_dont_care(Gamestate *state);
 
 // fuel tanker outcomes
-void outcome_give_nothing(Ship *ship);
-void outcome_give_food(Ship *ship);
-void outcome_give_cigarette(Ship *ship);
+void outcome_give_nothing(Gamestate *state);
+void outcome_give_food(Gamestate *state);
+void outcome_give_cigarette(Gamestate *state);
 
 // alien capitalists outcomes
-void outcome_trade_nothing(Ship *ship);
-void outcome_insult_them(Ship *ship);
-void outcome_trade_small_fuel(Ship *ship);
-void outcome_trade_small_fuel(Ship *ship);
+void outcome_trade_nothing(Gamestate *state);
+void outcome_insult_them(Gamestate *state);
+void outcome_trade_small_fuel(Gamestate *state);
+void outcome_trade_small_fuel(Gamestate *state);
 
 // wormhole
-void outcome_keep_flying(Ship *ship);
-void outcome_go_in(Ship *ship);
+void outcome_keep_flying(Gamestate *state);
+void outcome_go_in(Gamestate *state);
 
 // snakes
-void outcome_let_pilot_die(Ship *ship);
-void outcome_kill_doctor_save_pilot(Ship *ship);
+void outcome_let_pilot_die(Gamestate *state);
+void outcome_kill_doctor_save_pilot(Gamestate *state);
 
 // IRS
-void outcome_flee_irs(Ship *ship);
-void outcome_fight_irs(Ship *ship);
-void outcome_bribe_irs(Ship *ship);
-void outcome_pay_irs(Ship *ship);
+void outcome_flee_irs(Gamestate *state);
+void outcome_fight_irs(Gamestate *state);
+void outcome_bribe_irs(Gamestate *state);
+void outcome_pay_irs(Gamestate *state);
 
 // leif erikson
-void outcome_give_him_food(Ship *ship);
-void outcome_follow_map(Ship *ship);
-void outcome_ignore_him(Ship *ship);
+void outcome_give_him_food(Gamestate *state);
+void outcome_follow_map(Gamestate *state);
+void outcome_ignore_him(Gamestate *state);
 
 Event* initialize_events();
 Event* get_random_event(Event* events, int num_events);
 int get_user_choice(Event* event);
-bool is_ship_alive(Ship *ship);
+bool is_state_alive(Gamestate *state);
 
 int main() {
 
-	int month = 1;
-	Ship spaceship = {100, 100, 100, 100, 0, 100, 0, 1, 1, 1};
+	Gamestate state = {100, 100, 100, 100, 0, 100, 0, 1, 1, 1, 1};
 	Event* events = initialize_events();
 	int num_events = 9;
 	int user_choice;
@@ -98,12 +98,12 @@ int main() {
 	srand(12345);
 	
 	greeting();
-	while (month < 10) {
+	while (state.month < 10) {
 
 		system("clear");
-		printf("It's month %d\n", month);
+		printf("It's month %d\n", state.month);
 
-		print_ship_attributes(&spaceship);
+		print_state_attributes(&state);
 		
 		current_event = get_random_event(events, num_events);
 		
@@ -111,7 +111,7 @@ int main() {
 		printf("%s", current_event->description);
 
 		user_choice = get_user_choice(current_event);
-		current_event->choices[user_choice - 1].outcome(&spaceship);
+		current_event->choices[user_choice - 1].outcome(&state);
 
 		printf("TITLE:       %s", current_event->title);
 		printf("\n");
@@ -119,19 +119,19 @@ int main() {
 		printf("\n");
 
 		if (strcmp(current_event->title, "WORMHOLE") == 0 && user_choice == 2) {
-			month += 2;
+			state.month += 2;
 		}
 
-		if (is_ship_alive(&spaceship) == false) {
+		if (is_state_alive(&state) == false) {
 			bad_ending();
 			break;
 		}
 		
-		month++;
+		state.month++;
 	}
 	
-	// the ship survived through all 9 months, so trigger the good ending
-	if (month == 10) {
+	// the state survived through all 9 months, so trigger the good ending
+	if (state.month == 10) {
 		good_ending();	
 	}
 	
@@ -139,7 +139,7 @@ int main() {
 }
 
 void greeting() {
-	printf("Get ur ass in that spaceship\n");
+	printf("Get ur ass in that spacestate\n");
 }
 
 void good_ending() {
@@ -147,147 +147,147 @@ void good_ending() {
 }
 
 void bad_ending() {
-	printf("A crack splits your ship. As you're thrown into space and feel the air ripped from your lungs, you notice the stars look beautiful tonight.\n");
+	printf("A crack splits your state. As you're thrown into space and feel the air ripped from your lungs, you notice the stars look beautiful tonight.\n");
 }
 
-void print_ship_attributes(Ship *ship) {
-	printf("Ship Status:\n");
-	printf("	Fuel:       %*d\n", MAX_WIDTH, ship->fuel);
-	printf("	Food:       %*d\n", MAX_WIDTH, ship->food);
-	printf("	Shields:    %*d\n", MAX_WIDTH, ship->shields);
-	printf("        Crystals:   %*d\n", MAX_WIDTH, ship->crystals);
-	printf("        Cigarettes: %*d\n", MAX_WIDTH, ship->cigarettes);
-	printf("        Morale:     %*d\n", MAX_WIDTH, ship->morale);
-	printf("        Tires:      %*d\n", MAX_WIDTH, ship->tires);
-	printf("        Pilot:      %*d\n", MAX_WIDTH, ship->pilot);
-	printf("        Doctor:     %*d\n", MAX_WIDTH, ship->doctor);
-	printf("        Scientist:  %*d\n", MAX_WIDTH, ship->scientist);
+void print_state_attributes(Gamestate *state) {
+	printf("Gamestate Status:\n");
+	printf("	Fuel:       %*d\n", MAX_WIDTH, state->fuel);
+	printf("	Food:       %*d\n", MAX_WIDTH, state->food);
+	printf("	Shields:    %*d\n", MAX_WIDTH, state->shields);
+	printf("        Crystals:   %*d\n", MAX_WIDTH, state->crystals);
+	printf("        Cigarettes: %*d\n", MAX_WIDTH, state->cigarettes);
+	printf("        Morale:     %*d\n", MAX_WIDTH, state->morale);
+	printf("        Tires:      %*d\n", MAX_WIDTH, state->tires);
+	printf("        Pilot:      %*d\n", MAX_WIDTH, state->pilot);
+	printf("        Doctor:     %*d\n", MAX_WIDTH, state->doctor);
+	printf("        Scientist:  %*d\n", MAX_WIDTH, state->scientist);
 }
 
-void outcome_flee_pirates(Ship *ship) {
-	ship->fuel -= 30;
-	ship->food -= 10;
+void outcome_flee_pirates(Gamestate *state) {
+	state->fuel -= 30;
+	state->food -= 10;
 }
 
-void outcome_fight_pirates(Ship *ship) {
-	ship->fuel -= 10;
-	ship->food -= 10;
-	ship->shields -= 20;
+void outcome_fight_pirates(Gamestate *state) {
+	state->fuel -= 10;
+	state->food -= 10;
+	state->shields -= 20;
 }
 
-void outcome_rob_pizza(Ship *ship) {
-	ship->food += 50;
-	ship->fuel -= 10;
+void outcome_rob_pizza(Gamestate *state) {
+	state->food += 50;
+	state->fuel -= 10;
 }
 
-void outcome_buy_pizza(Ship *ship) {
-	ship->food += 50;
-	ship->crystals -= 50;
-	ship->fuel -= 10;
+void outcome_buy_pizza(Gamestate *state) {
+	state->food += 50;
+	state->crystals -= 50;
+	state->fuel -= 10;
 }
 
-void outcome_leave(Ship *ship) {
-	ship->fuel -= 10;
+void outcome_leave(Gamestate *state) {
+	state->fuel -= 10;
 }
 
-void outcome_chew_him_out(Ship *ship) {
-	ship->morale -= 20;
+void outcome_chew_him_out(Gamestate *state) {
+	state->morale -= 20;
 }
 
-void outcome_smoke_together(Ship *ship) {
-	ship->morale += 20;
-	ship->cigarettes += 1;
+void outcome_smoke_together(Gamestate *state) {
+	state->morale += 20;
+	state->cigarettes += 1;
 }
 
-void outcome_dont_care(Ship *ship) {
-	ship->morale += 10;
+void outcome_dont_care(Gamestate *state) {
+	state->morale += 10;
 }
 
-void outcome_give_nothing(Ship *ship) {
-	ship->fuel -= 10;
+void outcome_give_nothing(Gamestate *state) {
+	state->fuel -= 10;
 }
 
-void outcome_give_food(Ship *ship) {
-	ship->food -= 10;
-	ship->fuel += 30;
+void outcome_give_food(Gamestate *state) {
+	state->food -= 10;
+	state->fuel += 30;
 }
 
-void outcome_give_cigarette(Ship *ship) {
-	ship->cigarettes -= 1;
-	ship->fuel += 300;
+void outcome_give_cigarette(Gamestate *state) {
+	state->cigarettes -= 1;
+	state->fuel += 300;
 }
 
-void outcome_trade_nothing(Ship *ship) {
-	ship->fuel -= 10;
+void outcome_trade_nothing(Gamestate *state) {
+	state->fuel -= 10;
 }
 
-void outcome_insult_them(Ship *ship) {
-	ship->shields -= 90;
-	ship->fuel -= 30;
-	ship->morale += 30;
+void outcome_insult_them(Gamestate *state) {
+	state->shields -= 90;
+	state->fuel -= 30;
+	state->morale += 30;
 }
 
-void outcome_trade_small_fuel(Ship *ship) {
-	ship->fuel -= 10;
-	ship->shields += 20;
+void outcome_trade_small_fuel(Gamestate *state) {
+	state->fuel -= 10;
+	state->shields += 20;
 }
 
-void outcome_trade_large_fuel(Ship *ship) {
-	ship->fuel -= 200;
-	ship->tires += 1;
+void outcome_trade_large_fuel(Gamestate *state) {
+	state->fuel -= 200;
+	state->tires += 1;
 }
 
-void outcome_keep_flying(Ship *ship) {
-	ship->fuel -= 10;
+void outcome_keep_flying(Gamestate *state) {
+	state->fuel -= 10;
 }
 
-void outcome_go_in(Ship *ship) {
-	ship->fuel += 10;
+void outcome_go_in(Gamestate *state) {
+	state->fuel += 10;
 }
 
-void outcome_let_pilot_die(Ship *ship) {
-	ship->pilot -= 1;
+void outcome_let_pilot_die(Gamestate *state) {
+	state->pilot -= 1;
 }
 
-void outcome_kill_doctor_save_pilot(Ship *ship) {
-	ship->doctor -= 1;
+void outcome_kill_doctor_save_pilot(Gamestate *state) {
+	state->doctor -= 1;
 }
 
-void outcome_give_him_food(Ship *ship) {
-	ship->food -= 10;
-	ship->morale += 50;
+void outcome_give_him_food(Gamestate *state) {
+	state->food -= 10;
+	state->morale += 50;
 }
 
-void outcome_follow_map(Ship *ship) {
-	ship->fuel += 40;
-	ship->morale += 20;
+void outcome_follow_map(Gamestate *state) {
+	state->fuel += 40;
+	state->morale += 20;
 }
 
-void outcome_ignore_him(Ship *ship) {
-	ship->fuel -= 10;
+void outcome_ignore_him(Gamestate *state) {
+	state->fuel -= 10;
 }
 
-void outcome_flee_irs(Ship *ship) {
-	ship->crystals -= 100;
-	ship->fuel -= 200;
-	ship->morale -= 10;
+void outcome_flee_irs(Gamestate *state) {
+	state->crystals -= 100;
+	state->fuel -= 200;
+	state->morale -= 10;
 }
 
-void outcome_fight_irs(Ship *ship) {
-	ship->crystals -= 100;
-	ship->doctor -= 1;
-	ship->scientist -= 1;
-	ship->morale -= 10;
+void outcome_fight_irs(Gamestate *state) {
+	state->crystals -= 100;
+	state->doctor -= 1;
+	state->scientist -= 1;
+	state->morale -= 10;
 }
 
-void outcome_bribe_irs(Ship *ship) {
-	ship->crystals -= 100;
-	ship->morale -= 100;
+void outcome_bribe_irs(Gamestate *state) {
+	state->crystals -= 100;
+	state->morale -= 100;
 }
 
-void outcome_pay_irs(Ship *ship) {
-	ship->crystals -= 100;
-	ship->morale -= 10;
+void outcome_pay_irs(Gamestate *state) {
+	state->crystals -= 100;
+	state->morale -= 10;
 }
 
 Event* initialize_events() {
@@ -295,7 +295,7 @@ Event* initialize_events() {
 
 	game_events[0] = (Event){
 		"PIRATE ATTACK",
-		"The pirates have spotted your ship, and they look mean and hungry!\n",
+		"The pirates have spotted your state, and they look mean and hungry!\n",
 		2,
 		{
 			{"Fight", outcome_fight_pirates},
@@ -316,7 +316,7 @@ Event* initialize_events() {
 
 	game_events[2] = (Event){
 		"CAUGHT REDHANDED",
-		"One night, you can't sleep. You decide to go on a walk around the ship instead. What's this?! You catch the doctor smoking! NASA treats everything flammable like the plague.",
+		"One night, you can't sleep. You decide to go on a walk around the state instead. What's this?! You catch the doctor smoking! NASA treats everything flammable like the plague.",
 		3,
 		{
 			{"Chew him out", outcome_chew_him_out},
@@ -338,7 +338,7 @@ Event* initialize_events() {
 
 	game_events[4] = (Event){
 		"ALIEN CAPITALISTS",
-		"Long-tentacled aliens with 5 large green eyes knock politely on your ship door. \"Wxould yxou lxike txo txrade sxome fxuel txo uxs? wxe wxill cxompensate yxou axs bxest wxe cxan.\" They wait patiently for your reply.",
+		"Long-tentacled aliens with 5 large green eyes knock politely on your state door. \"Wxould yxou lxike txo txrade sxome fxuel txo uxs? wxe wxill cxompensate yxou axs bxest wxe cxan.\" They wait patiently for your reply.",
 		4,
 		{
 			{"Sorry; supplies are tight", outcome_trade_nothing},
@@ -350,7 +350,7 @@ Event* initialize_events() {
 
 	game_events[5] = (Event){
 		"WORMHOLE",
-		"The ship sensors pick up a wormhole; it's barely within their range. Who knows where it will lead. Steer into it?",
+		"The state sensors pick up a wormhole; it's barely within their range. Who knows where it will lead. Steer into it?",
 		2,
 		{
 			{"Not worth it. Maintain course", outcome_keep_flying},
@@ -360,7 +360,7 @@ Event* initialize_events() {
 
 	game_events[6] = (Event){
 		"SNAKE",
-		"The pilot has suited up in his EVA suit and is changing the spaceship's flat tire. Suddenly, a snake rushes out of the darkness and sinks its teeth into the pilot's ankle! The pilot is beginning to bleed out...",
+		"The pilot has suited up in his EVA suit and is changing the spacestate's flat tire. Suddenly, a snake rushes out of the darkness and sinks its teeth into the pilot's ankle! The pilot is beginning to bleed out...",
 		2,
 		{
 			{"Let the pilot die. There's no way to save him", outcome_let_pilot_die},
@@ -370,7 +370,7 @@ Event* initialize_events() {
 
 	game_events[7] = (Event){
 		"VISIT FROM THE IRS",
-		"You're sipping your morning coffee when you hear a loud banging on the ship's entry port. \"THIS IS THE IRS. OUR RECORDS INDICATE YOU HAVE SIGNIFICANT UNPAID TAX LIABILITIES FROM THE PAST FIVE YEARS. YOU WILL LET US IN AND PROVIDE ALL FINANCIAL RECORDS UP TO TWELVE YEARS IN THE PAST.\"",
+		"You're sipping your morning coffee when you hear a loud banging on the state's entry port. \"THIS IS THE IRS. OUR RECORDS INDICATE YOU HAVE SIGNIFICANT UNPAID TAX LIABILITIES FROM THE PAST FIVE YEARS. YOU WILL LET US IN AND PROVIDE ALL FINANCIAL RECORDS UP TO TWELVE YEARS IN THE PAST.\"",
 		4,
 		{
 			{"We're getting out of here! Engines to max! Flee the scene.", outcome_flee_irs},
@@ -413,8 +413,8 @@ int get_user_choice(Event* event) {
 	return user_choice;
 }
 
-bool is_ship_alive(Ship *ship) {
-	if (ship->shields < 0) {
+bool is_state_alive(Gamestate *state) {
+	if (state->shields < 0) {
 		return false;
 	} else {
 		return true;
