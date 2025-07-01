@@ -49,6 +49,7 @@ void outcome_fight_pirates(Gamestate *state);
 Event* initialize_events();
 Event* get_random_event(Event* events, int num_events);
 int get_user_choice(Event* event);
+Outcome* execute_choice(Choice choice);
 bool is_ship_alive(Gamestate *state);
 
 int main() {
@@ -75,7 +76,8 @@ int main() {
 		printf("%s", current_event->description);
 
 		user_choice = get_user_choice(current_event);
-		current_event->choices[user_choice - 1].outcome(&spaceship);
+		Outcome* result = execute_choice(user_choice);
+		//current_event->choices[user_choice - 1].outcome(&state);
 
 		printf("TITLE:       %s", current_event->title);
 		printf("\n");
@@ -83,19 +85,19 @@ int main() {
 		printf("\n");
 
 		if (strcmp(current_event->title, "WORMHOLE") == 0 && user_choice == 2) {
-			month += 2;
+			state.month += 2;
 		}
 
-		if (is_ship_alive(&spaceship) == false) {
+		if (is_ship_alive(&state) == false) {
 			bad_ending();
 			break;
 		}
 		
-		month++;
+		state.month++;
 	}
 	
 	// the ship survived through all 9 months, so trigger the good ending
-	if (month == 10) {
+	if (state.month == 10) {
 		good_ending();	
 	}
 	
@@ -183,6 +185,18 @@ int get_user_choice(Event* event) {
 	scanf("%d", &user_choice);
 
 	return user_choice;
+}
+
+Outcome* execute_choice(Choice choice) {
+	int roll = rand() % 100 + 1;
+	int cumulative_prob = 0;
+
+	for (int i = 0; i < choice.num_outcomes; i++) {
+		cumulative_prob += choice.outcomes[i].probability;
+		if (roll =< cumulative_prob) {
+			return choice.outcomes[i];
+		}
+	}
 }
 
 bool is_ship_alive(Gamestate *state) {
