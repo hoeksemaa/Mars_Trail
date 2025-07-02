@@ -95,9 +95,10 @@ int main() {
 	int user_choice;
 	Event* current_event;
 
-	srand(12345);
+	srand(0);
 	
 	greeting();
+
 	while (state.month < 10) {
 
 		system("clear");
@@ -117,10 +118,6 @@ int main() {
 		printf("\n");
 		printf("USER CHOICE: %d", user_choice);
 		printf("\n");
-
-		if (strcmp(current_event->title, "WORMHOLE") == 0 && user_choice == 2) {
-			state.month += 2;
-		}
 
 		if (is_state_alive(&state) == false) {
 			bad_ending();
@@ -243,6 +240,7 @@ void outcome_keep_flying(Gamestate *state) {
 
 void outcome_go_in(Gamestate *state) {
 	state->fuel += 10;
+	state->month += 2;
 }
 
 void outcome_let_pilot_die(Gamestate *state) {
