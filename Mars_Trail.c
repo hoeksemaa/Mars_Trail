@@ -23,8 +23,8 @@ typedef struct {
 } Gamestate;
 
 typedef struct {
-	char choice_description[MAX_TEXT];
-	char result_description[MAX_TEXT];
+	char description[MAX_TEXT];
+	char result[MAX_TEXT];
 	int fuel_delta;
 	int food_delta;
 	int shields_delta;
@@ -50,56 +50,11 @@ void good_ending();
 void bad_ending();
 void print_state_attributes(Gamestate *state);
 
-/*
-// pirate outcomes
-void outcome_flee_pirates(Gamestate *state);
-void outcome_fight_pirates(Gamestate *state);
-
-// pizza outcomes
-void outcome_rob_pizza(Gamestate *state);
-void outcome_buy_pizza(Gamestate *state);
-void outcome_leave(Gamestate *state);
-
-// smoking outcomes
-void outcome_chew_him_out(Gamestate *state);
-void outcome_smoke_together(Gamestate *state);
-void outcome_dont_care(Gamestate *state);
-
-// fuel tanker outcomes
-void outcome_give_nothing(Gamestate *state);
-void outcome_give_food(Gamestate *state);
-void outcome_give_cigarette(Gamestate *state);
-
-// alien capitalists outcomes
-void outcome_trade_nothing(Gamestate *state);
-void outcome_insult_them(Gamestate *state);
-void outcome_trade_small_fuel(Gamestate *state);
-void outcome_trade_small_fuel(Gamestate *state);
-
-// wormhole
-void outcome_keep_flying(Gamestate *state);
-void outcome_go_in(Gamestate *state);
-
-// snakes
-void outcome_let_pilot_die(Gamestate *state);
-void outcome_kill_doctor_save_pilot(Gamestate *state);
-
-// IRS
-void outcome_flee_irs(Gamestate *state);
-void outcome_fight_irs(Gamestate *state);
-void outcome_bribe_irs(Gamestate *state);
-void outcome_pay_irs(Gamestate *state);
-
-// leif erikson
-void outcome_give_him_food(Gamestate *state);
-void outcome_follow_map(Gamestate *state);
-void outcome_ignore_him(Gamestate *state);
-*/
-
 Event* initialize_events();
 Event* get_random_event(Event* events, int num_events);
 int get_user_choice(Event* event);
 bool is_state_alive(Gamestate *state);
+void apply_choice(Gamestate *state, Event* current_event, int user_choice);
 
 int main() {
 
@@ -115,7 +70,7 @@ int main() {
 
 	while (state.month < 10) {
 
-		system("clear");
+		//system("clear");
 		printf("It's month %d\n", state.month);
 
 		print_state_attributes(&state);
@@ -126,7 +81,7 @@ int main() {
 		printf("%s", current_event->description);
 
 		user_choice = get_user_choice(current_event);
-
+		apply_choice(&state, current_event, user_choice);
 		//current_event->choices[user_choice - 1].outcome(&state);
 
 		//printf("TITLE:       %s", current_event->title);
@@ -176,134 +131,24 @@ void print_state_attributes(Gamestate *state) {
 	printf("        Scientist:  %*d\n", MAX_WIDTH, state->scientist);
 }
 
-/*
-void outcome_flee_pirates(Gamestate *state) {
-	state->fuel -= 30;
-	state->food -= 10;
-}
+void apply_choice(Gamestate *state, Event* current_event, int user_choice) {
+	Choice *choice = &current_event->choices[user_choice - 1];
 
-void outcome_fight_pirates(Gamestate *state) {
-	state->fuel -= 10;
-	state->food -= 10;
-	state->shields -= 20;
-}
+	printf("\n%s\n", choice->result);
 
-void outcome_rob_pizza(Gamestate *state) {
-	state->food += 50;
-	state->fuel -= 10;
+	// apply the deltas to the gamestate
+	state->fuel       += choice->fuel_delta;
+	state->food       += choice->food_delta;
+	state->shields    += choice->shields_delta;
+	state->crystals   += choice->crystals_delta;
+	state->cigarettes += choice->cigarettes_delta;
+	state->morale     += choice->morale_delta;
+	state->tires      += choice->tires_delta;
+	state->pilot      += choice->pilot_delta;
+	state->doctor     += choice->doctor_delta;
+	state->scientist  += choice->scientist_delta;
+	state->month      += choice->month_delta;
 }
-
-void outcome_buy_pizza(Gamestate *state) {
-	state->food += 50;
-	state->crystals -= 50;
-	state->fuel -= 10;
-}
-
-void outcome_leave(Gamestate *state) {
-	state->fuel -= 10;
-}
-
-void outcome_chew_him_out(Gamestate *state) {
-	state->morale -= 20;
-}
-
-void outcome_smoke_together(Gamestate *state) {
-	state->morale += 20;
-	state->cigarettes += 1;
-}
-
-void outcome_dont_care(Gamestate *state) {
-	state->morale += 10;
-}
-
-void outcome_give_nothing(Gamestate *state) {
-	state->fuel -= 10;
-}
-
-void outcome_give_food(Gamestate *state) {
-	state->food -= 10;
-	state->fuel += 30;
-}
-
-void outcome_give_cigarette(Gamestate *state) {
-	state->cigarettes -= 1;
-	state->fuel += 300;
-}
-
-void outcome_trade_nothing(Gamestate *state) {
-	state->fuel -= 10;
-}
-
-void outcome_insult_them(Gamestate *state) {
-	state->shields -= 90;
-	state->fuel -= 30;
-	state->morale += 30;
-}
-
-void outcome_trade_small_fuel(Gamestate *state) {
-	state->fuel -= 10;
-	state->shields += 20;
-}
-
-void outcome_trade_large_fuel(Gamestate *state) {
-	state->fuel -= 200;
-	state->tires += 1;
-}
-
-void outcome_keep_flying(Gamestate *state) {
-	state->fuel -= 10;
-}
-
-void outcome_go_in(Gamestate *state) {
-	state->fuel += 10;
-	state->month += 2;
-}
-
-void outcome_let_pilot_die(Gamestate *state) {
-	state->pilot -= 1;
-}
-
-void outcome_kill_doctor_save_pilot(Gamestate *state) {
-	state->doctor -= 1;
-}
-
-void outcome_give_him_food(Gamestate *state) {
-	state->food -= 10;
-	state->morale += 50;
-}
-
-void outcome_follow_map(Gamestate *state) {
-	state->fuel += 40;
-	state->morale += 20;
-}
-
-void outcome_ignore_him(Gamestate *state) {
-	state->fuel -= 10;
-}
-
-void outcome_flee_irs(Gamestate *state) {
-	state->crystals -= 100;
-	state->fuel -= 200;
-	state->morale -= 10;
-}
-
-void outcome_fight_irs(Gamestate *state) {
-	state->crystals -= 100;
-	state->doctor -= 1;
-	state->scientist -= 1;
-	state->morale -= 10;
-}
-
-void outcome_bribe_irs(Gamestate *state) {
-	state->crystals -= 100;
-	state->morale -= 100;
-}
-
-void outcome_pay_irs(Gamestate *state) {
-	state->crystals -= 100;
-	state->morale -= 10;
-}
-*/
 
 Event* initialize_events() {
 	static Event game_events[MAX_EVENTS];
@@ -316,12 +161,12 @@ Event* initialize_events() {
 			{
 				"Fight", 
 				"ouchie",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				-30, -10, 0, 0, 0, 0, 0, 0, 0, 0, 0
 			},
 			{
 				"Flee", 
 				"zooooooooooom",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				-10, -10, -20, 0, 0, 0, 0, 0, 0, 0, 0
 			}
 		}
 	};
@@ -334,17 +179,17 @@ Event* initialize_events() {
 			{
 				"Rob the pizza", 
 				"He doesn't react as you hop over the counter and pocket a greasy slice.",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				-10, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0
 			},
 			{
 				"Buy the pizza", 
 				"thx man $",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				-10, 50, 0, -50, 0, 0, 0, 0, 0, 0, 0
 			},
 			{
 				"Leave emptyhanded", 
 				"aight",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				-10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 			}
 		}
 	};
@@ -357,17 +202,17 @@ Event* initialize_events() {
 			{
 				"Chew him out", 
 				"wow how original",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				0, 0, 0, 0, 0, -20, 0, 0, 0, 0, 0
 			},
 			{
 				"Fuck it. Pass me one", 
 				"hel yea bruder",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				0, 0, 0, 0, 1, 20, 0, 0, 0, 0, 0
 			},
 			{
 				"Walk away. Pretend it didn't happen",
 				"seeya",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0
 			}
 		}
 	};
@@ -380,17 +225,17 @@ Event* initialize_events() {
 			{
 				"Sorry; supplies are tight",
 				"no worries bruv",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				-10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 			},
 			{
 				"Give him a tortilla",
 				"o hel yea astronaut bread",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				30, -10, 0, 0, 0, 0, 0, 0, 0, 0, 0
 			},
 			{
 				"Give him a cigarette",
 				"smoooooooth mhm",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				300, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0
 			}
 		}
 	};
@@ -403,22 +248,22 @@ Event* initialize_events() {
 			{
 				"Sorry; supplies are tight",
 				"fine :(",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				-10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 			},
 			{
 				"They look funny! Call them the worst word you know.",
 				"why woud u do that",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				-30, 0, -90, 0, 0, 30, 0, 0, 0, 0, 0
 			},
 			{
 				"We can spare a little",
 				"hel yea :)",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				-20, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0
 			},
 			{
 				"Fuck it; take almost everything",
 				"BIG W",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				-200, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0
 			}
 		}
 	};
@@ -431,12 +276,12 @@ Event* initialize_events() {
 			{
 				"Not worth it. Maintain course",
 				"lame",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				-10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 			},
 			{
 				"Cowabunga dude!",
 				"into the fuuuuuuuuuuture!",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2
 			}
 		}
 	};
@@ -449,12 +294,12 @@ Event* initialize_events() {
 			{
 				"Let the pilot die. There's no way to save him",
 				"seeya later space cowboy",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0
 			},
 			{
 				"Kill the doctor and give his blood to the pilot. It might stabilize him",
 				"ashes to ashes, dust to dust",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				0, 0, 0, 0, 0, 10, 0, 0, -1, 0, 0
 			}
 		}
 	};
