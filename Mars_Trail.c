@@ -33,6 +33,7 @@ typedef struct {
 	int morale_delta;
 	int tires_delta;
 	int pilot_delta;
+	int doctor_delta;
 	int scientist_delta;
 	int month_delta;	
 } Choice;
@@ -49,6 +50,7 @@ void good_ending();
 void bad_ending();
 void print_state_attributes(Gamestate *state);
 
+/*
 // pirate outcomes
 void outcome_flee_pirates(Gamestate *state);
 void outcome_fight_pirates(Gamestate *state);
@@ -92,6 +94,7 @@ void outcome_pay_irs(Gamestate *state);
 void outcome_give_him_food(Gamestate *state);
 void outcome_follow_map(Gamestate *state);
 void outcome_ignore_him(Gamestate *state);
+*/
 
 Event* initialize_events();
 Event* get_random_event(Event* events, int num_events);
@@ -123,7 +126,8 @@ int main() {
 		printf("%s", current_event->description);
 
 		user_choice = get_user_choice(current_event);
-		current_event->choices[user_choice - 1].outcome(&state);
+
+		//current_event->choices[user_choice - 1].outcome(&state);
 
 		//printf("TITLE:       %s", current_event->title);
 		//printf("\n");
@@ -172,6 +176,7 @@ void print_state_attributes(Gamestate *state) {
 	printf("        Scientist:  %*d\n", MAX_WIDTH, state->scientist);
 }
 
+/*
 void outcome_flee_pirates(Gamestate *state) {
 	state->fuel -= 30;
 	state->food -= 10;
@@ -298,6 +303,7 @@ void outcome_pay_irs(Gamestate *state) {
 	state->crystals -= 100;
 	state->morale -= 10;
 }
+*/
 
 Event* initialize_events() {
 	static Event game_events[MAX_EVENTS];
@@ -307,8 +313,16 @@ Event* initialize_events() {
 		"The pirates have spotted your state, and they look mean and hungry!\n",
 		2,
 		{
-			{"Fight", outcome_fight_pirates},
-			{"Flee", outcome_flee_pirates}
+			{
+				"Fight", 
+				"ouchie",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"Flee", 
+				"zooooooooooom",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			}
 		}
 	};
 
@@ -317,9 +331,21 @@ Event* initialize_events() {
 		"You spot a rusty red shack nestled in an asteroid.\"Welcome to Papa Zorb's, home of the glorpiest pizza in the galaxy. What can i getcha?\"\n",
 		3,
 		{
-			{"Rob the pizza", outcome_rob_pizza},
-			{"Buy the pizza", outcome_buy_pizza},
-			{"Leave emptyhanded", outcome_leave}
+			{
+				"Rob the pizza", 
+				"He doesn't react as you hop over the counter and pocket a greasy slice.",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"Buy the pizza", 
+				"thx man $",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"Leave emptyhanded", 
+				"aight",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			}
 		}
 	};
 
@@ -328,9 +354,21 @@ Event* initialize_events() {
 		"One night, you can't sleep. You decide to go on a walk around the state instead. What's this?! You catch the doctor smoking! NASA treats everything flammable like the plague.",
 		3,
 		{
-			{"Chew him out", outcome_chew_him_out},
-			{"Fuck it. Pass me one", outcome_smoke_together},
-			{"Walk away. Pretend it didn't happen", outcome_dont_care}
+			{
+				"Chew him out", 
+				"wow how original",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"Fuck it. Pass me one", 
+				"hel yea bruder",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"Walk away. Pretend it didn't happen",
+				"seeya",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			}
 		}
 	};
 
@@ -339,9 +377,21 @@ Event* initialize_events() {
 		"An old man with a white handlebar mustasche in an 18-wheeler fuel truck pulls up next to you. \"I've been moving this cargo for 3 weeks straight now. Got anything to take the edge off?\"",
 		3,
 		{
-			{"Sorry; supplies are tight", outcome_give_nothing},
-			{"Give him a tortilla", outcome_give_food},
-			{"Give him a cigarette", outcome_give_cigarette}
+			{
+				"Sorry; supplies are tight",
+				"no worries bruv",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"Give him a tortilla",
+				"o hel yea astronaut bread",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"Give him a cigarette",
+				"smoooooooth mhm",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			}
 		}
 	};
 
@@ -350,10 +400,26 @@ Event* initialize_events() {
 		"Long-tentacled aliens with 5 large green eyes knock politely on your state door. \"Wxould yxou lxike txo txrade sxome fxuel txo uxs? wxe wxill cxompensate yxou axs bxest wxe cxan.\" They wait patiently for your reply.",
 		4,
 		{
-			{"Sorry; supplies are tight", outcome_trade_nothing},
-			{"They look funny! Call them the worst word you know.", outcome_insult_them},
-			{"We can spare a little", outcome_trade_small_fuel},
-			{"Fuck it; take almost everything", outcome_trade_large_fuel}
+			{
+				"Sorry; supplies are tight",
+				"fine :(",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"They look funny! Call them the worst word you know.",
+				"why woud u do that",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"We can spare a little",
+				"hel yea :)",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"Fuck it; take almost everything",
+				"BIG W",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			}
 		}
 	};
 
@@ -362,8 +428,16 @@ Event* initialize_events() {
 		"The state sensors pick up a wormhole; it's barely within their range. Who knows where it will lead. Steer into it?",
 		2,
 		{
-			{"Not worth it. Maintain course", outcome_keep_flying},
-			{"Cowabunga dude!", outcome_go_in}
+			{
+				"Not worth it. Maintain course",
+				"lame",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"Cowabunga dude!",
+				"into the fuuuuuuuuuuture!",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			}
 		}
 	};
 
@@ -372,8 +446,16 @@ Event* initialize_events() {
 		"The pilot has suited up in his EVA suit and is changing the spacestate's flat tire. Suddenly, a snake rushes out of the darkness and sinks its teeth into the pilot's ankle! The pilot is beginning to bleed out...",
 		2,
 		{
-			{"Let the pilot die. There's no way to save him", outcome_let_pilot_die},
-			{"Kill the doctor and give his blood to the pilot. It might stabilize him", outcome_kill_doctor_save_pilot}
+			{
+				"Let the pilot die. There's no way to save him",
+				"seeya later space cowboy",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"Kill the doctor and give his blood to the pilot. It might stabilize him",
+				"ashes to ashes, dust to dust",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			}
 		}
 	};
 
@@ -382,10 +464,26 @@ Event* initialize_events() {
 		"You're sipping your morning coffee when you hear a loud banging on the state's entry port. \"THIS IS THE IRS. OUR RECORDS INDICATE YOU HAVE SIGNIFICANT UNPAID TAX LIABILITIES FROM THE PAST FIVE YEARS. YOU WILL LET US IN AND PROVIDE ALL FINANCIAL RECORDS UP TO TWELVE YEARS IN THE PAST.\"",
 		4,
 		{
-			{"We're getting out of here! Engines to max! Flee the scene.", outcome_flee_irs},
-			{"I'm not going down without a fight! Draw your NASA-standard-issue S&W revolver", outcome_fight_irs},
-			{"I'm sure you're mistaken. Make a large contribution to the agent's child's college fund.", outcome_bribe_irs},
-			{"Sigh heavily. Let them in.", outcome_pay_irs}
+			{
+				"We're getting out of here! Engines to max! Flee the scene.",
+				"ugly death",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"I'm not going down without a fight! Draw your NASA-standard-issue S&W revolver",
+				"cowboy death",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"I'm sure you're mistaken. Make a large contribution to the agent's child's college fund.",
+				"al capone death",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"Sigh heavily. Let them in.",
+				"normal old death",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			}
 		}
 	};
 
@@ -394,9 +492,21 @@ Event* initialize_events() {
 		"You find famed explorer Leif Erikson drifting through space, alive and kicking at the ripe age of 1050 years old. He looks up from studying a star map. \"I'm famished! Got anything to eat?\" You notice he's circled a portion of his map and labelled it \"Fuel cloud\"",
 		3,
 		{
-			{"Give him some food. He's probably got some crazy stories", outcome_give_food},
-			{"Track down this fuel cloud", outcome_follow_map},
-			{"Ignore him. He weirds me out", outcome_ignore_him}
+			{
+				"Give him some food. He's probably got some crazy stories",
+				"lemme tell you about the time i fought the britains",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"Track down this fuel cloud",
+				"huffing fuel XD",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"Ignore him. He weirds me out",
+				"fuckn jerk",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			}
 		}
 	};
 	
