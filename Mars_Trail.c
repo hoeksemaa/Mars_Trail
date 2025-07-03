@@ -6,6 +6,7 @@
 #define MAX_CHOICES 4
 #define MAX_EVENTS 10
 #define MAX_WIDTH 4
+#define MAX_TEXT 300
 
 typedef struct {
 	int fuel;
@@ -22,13 +23,23 @@ typedef struct {
 } Gamestate;
 
 typedef struct {
-	char description[100];
-	void (*outcome)(Gamestate *state);
+	char choice_description[MAX_TEXT];
+	char result_description[MAX_TEXT];
+	int fuel_delta;
+	int food_delta;
+	int shields_delta;
+	int crystals_delta;
+	int cigarettes_delta;
+	int morale_delta;
+	int tires_delta;
+	int pilot_delta;
+	int scientist_delta;
+	int month_delta;	
 } Choice;
 
 typedef struct {
-	char title[50];
-	char description[300];
+	char title[MAX_TEXT];
+	char description[MAX_TEXT];
 	int num_choices;
 	Choice choices[MAX_CHOICES];
 } Event;
@@ -114,10 +125,10 @@ int main() {
 		user_choice = get_user_choice(current_event);
 		current_event->choices[user_choice - 1].outcome(&state);
 
-		printf("TITLE:       %s", current_event->title);
-		printf("\n");
-		printf("USER CHOICE: %d", user_choice);
-		printf("\n");
+		//printf("TITLE:       %s", current_event->title);
+		//printf("\n");
+		//printf("USER CHOICE: %d", user_choice);
+		//printf("\n");
 
 		if (is_state_alive(&state) == false) {
 			bad_ending();
@@ -140,7 +151,7 @@ void greeting() {
 }
 
 void good_ending() {
-	printf("You safely touch down on the planet Mars! You become national heroes back at home. Unfortunately, you're not back at home.\n");
+	printf("You safely touch down on the planet Mars! You become national heroes back at home. Fortunately, you're not back at home.\n");
 }
 
 void bad_ending() {
