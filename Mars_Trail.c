@@ -4,7 +4,7 @@
 #include <string.h>
 
 #define MAX_CHOICES 4
-#define MAX_EVENTS 10
+#define MAX_EVENTS 12
 #define MAX_WIDTH 4
 #define MAX_TEXT 300
 
@@ -49,7 +49,6 @@ void greeting();
 void good_ending();
 void bad_ending();
 void print_state_attributes(Gamestate *state);
-
 Event* initialize_events();
 Event* get_random_event(Event* events, int num_events);
 int get_user_choice(Event* event);
@@ -60,7 +59,7 @@ int main() {
 
 	Gamestate state = {100, 100, 100, 100, 0, 100, 0, 1, 1, 1, 1};
 	Event* events = initialize_events();
-	int num_events = 9;
+	int num_events = 12;
 	int user_choice;
 	Event* current_event;
 
@@ -82,12 +81,6 @@ int main() {
 
 		user_choice = get_user_choice(current_event);
 		apply_choice(&state, current_event, user_choice);
-		//current_event->choices[user_choice - 1].outcome(&state);
-
-		//printf("TITLE:       %s", current_event->title);
-		//printf("\n");
-		//printf("USER CHOICE: %d", user_choice);
-		//printf("\n");
 
 		if (is_state_alive(&state) == false) {
 			bad_ending();
@@ -350,6 +343,75 @@ Event* initialize_events() {
 			{
 				"Ignore him. He weirds me out",
 				"fuckn jerk",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			}
+		}
+	};
+
+	game_events[9] = (Event){
+		"OLD LADY",
+		"u see an old lady at a crosswalk.",
+		2,
+		{
+			{
+				"Help her cross.",
+				"good citizen",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 
+			},
+			{
+				"Ignore her; keep flying by",
+				"bad bad bad citizen",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			}
+		}
+	};
+
+	game_events[10] = (Event){
+		"WHALES",
+		"you see a pod of whales off of the port side of the ship. one of them glistens white, and has a harpoon scar running on its back.",
+		3,
+		{
+			{
+				"look for a while.",
+				"very cool",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"take a picture.",
+				"itll last longer",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"keep flying",
+				"important business to attend to",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			}
+		}
+	};
+
+	game_events[11] = (Event){
+		"SATELLITE",
+		"a starlink satellite is slowly approaching your ship, and the radio picks up some of its chatter. it seems.... distant.... incoherent.... corrupted. it asks to dock with the ship.",
+		4,
+		{
+			{
+				"fly away",
+				"ok :(",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"open fire",
+				"it fires back",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"try to hack it",
+				"zeep zorp zop",
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			},
+			{
+				"let it dock",
+				"it accepts >:)",
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 			}
 		}
