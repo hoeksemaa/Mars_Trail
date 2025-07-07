@@ -46,14 +46,12 @@ typedef struct {
 } Event;
 
 void greeting();
-void good_ending();
-void bad_ending();
 void print_state_attributes(Gamestate *state);
 Event* initialize_events();
 Event* get_random_event(Event* events, int num_events);
 int get_user_choice(Event* event);
-bool is_state_alive(Gamestate *state);
 void apply_choice(Gamestate *state, Event* current_event, int user_choice);
+bool is_game_over(Gamestate *state);
 
 int main(int argc, char *argv[]) {
 
@@ -96,17 +94,11 @@ int main(int argc, char *argv[]) {
 		user_choice = get_user_choice(current_event);
 		apply_choice(&state, current_event, user_choice);
 
-		if (is_state_alive(&state) == false) {
-			bad_ending();
+		if (is_game_over(&state) == true) {
 			break;
 		}
 		
 		state.month++;
-	}
-	
-	// the state survived through all 9 months, so trigger the good ending
-	if (state.month == 10) {
-		good_ending();	
 	}
 	
 	return 0;
@@ -114,14 +106,6 @@ int main(int argc, char *argv[]) {
 
 void greeting() {
 	printf("Get ur ass in that spacestate\n");
-}
-
-void good_ending() {
-	printf("You safely touch down on the planet Mars! You become national heroes back at home. Fortunately, you're not back at home.\n");
-}
-
-void bad_ending() {
-	printf("A crack splits your state. As you're thrown into space and feel the air ripped from your lungs, you notice the stars look beautiful tonight.\n");
 }
 
 void print_state_attributes(Gamestate *state) {
@@ -459,4 +443,39 @@ bool is_state_alive(Gamestate *state) {
 	} else {
 		return true;
 	}
+}
+
+bool is_game_over(Gamestate *state) {
+	// food ran out
+	if (state->food <= 0) {
+		printf("crew withered away n died :(. The end.\n");
+		return true;
+
+	// morale ran out
+	} else if (state->morale <= 0) {
+		printf("you became very unpopular. crew snacked on your liver. The end.\n");
+		return true;
+
+	// bad ending; no fuel when you get to mars
+	} else if (state->fuel <= 0 && state->month >= 10) {
+		printf("with no fuel on board, you've left nothing in the tank to land. you smash into the planet mars at 12,345 mph and are instantly atomized. The end.\n");
+		return true;
+
+	// bad ending: no pilot when you get to mars
+	} else if (state->pilot <= 0 && state->month >= 10) {
+		printf("did you really think you could land the ship?? without a pilot, you fiddle around with the engine controls but smash helplessly into the surface.\n");
+		return true;
+	
+	// secret ending
+	} else if (state->tires >= 1) {
+		printf("You safely touch down on the planet Mars! A martian farmer saunters up to you: i'll trade you 5000 acres for that tire. You did good.\n");
+		return true;
+
+	// good ending
+	} else if (state->month >= 10) {
+		printf("You safely touch down on the planet Mars! You become national heroes back at home. Fortunately, you're not back at home.\n");
+		return true;
+	}
+
+	return false;
 }
