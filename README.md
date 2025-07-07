@@ -16,3 +16,9 @@ Compile:
 
 Execute:
 ```./Mars_Trail```
+
+or
+
+```./Mars_Trail 123```
+
+to change the seed.

@@ -55,15 +55,29 @@ int get_user_choice(Event* event);
 bool is_state_alive(Gamestate *state);
 void apply_choice(Gamestate *state, Event* current_event, int user_choice);
 
-int main() {
+int main(int argc, char *argv[]) {
 
+	// seed manipulation
+	int seed = 0;
+	
+	if (argc > 1) {
+		char *endptr;
+		long val = strtol(argv[1], &endptr, 10);
+
+		if (*endptr == '\0') {
+			seed = val;
+		}
+	}
+
+	srand(seed);
+	printf("using seed: %d\n", seed);
+
+	// gameplay
 	Gamestate state = {100, 100, 100, 100, 0, 100, 0, 1, 1, 1, 1};
 	Event* events = initialize_events();
 	int num_events = 12;
 	int user_choice;
 	Event* current_event;
-
-	srand(0);
 	
 	greeting();
 
