@@ -261,18 +261,18 @@ Event* initialize_events() {
 
 	game_events[5] = (Event){
 		"WORMHOLE",
-		"The state sensors pick up a wormhole; it's barely within their range. Who knows where it will lead. Steer into it?",
+		"The ship's sensors pick up a wormhole, about 200 kilometers out. You've never seen a worm's hole before.",
 		2,
 		{
 			{
-				"Not worth it. Maintain course",
-				"lame",
-				-10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				"Keep flying.",
+				"The crew sighs with relief. They've never seen a worm's hole either.",
+				0, -10, 0, 0, 0, 10, 0, 0, 0, 0, 0
 			},
 			{
-				"Cowabunga dude!",
-				"into the fuuuuuuuuuuture!",
-				10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2
+				"Fly into it.",
+				"You burn the engines to change course. As the wormhole engulfs you, everything goes black and you get a funny feeling.",
+				-30, -10, 0, 0, 0, 0, 0, 0, 0, 0, 2
 			}
 		}
 	};
