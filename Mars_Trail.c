@@ -6,7 +6,7 @@
 #define MAX_CHOICES 4
 #define MAX_EVENTS 12
 #define MAX_WIDTH 4
-#define MAX_TEXT 300
+#define MAX_TEXT 400
 
 typedef struct {
 	int fuel;
@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
 }
 
 void greeting() {
-	printf("Get ur ass in that spacestate\n");
+	printf("Liftoff! NASA has sent you on a one-way 9-month Hohmann transfer mission to Mars. Getting there (after your initial burn) should be easy; getting there in one piece may be hard. Manage your resources carefully.\n");
 }
 
 void print_state_attributes(Gamestate *state) {
@@ -145,116 +145,116 @@ Event* initialize_events() {
 	static Event game_events[MAX_EVENTS];
 
 	game_events[0] = (Event){
-		"PIRATE ATTACK",
-		"The pirates have spotted your state, and they look mean and hungry!\n",
+		"PIRATES",
+		"Pirates spot your ship! They raise a black flag (it doesn't flutter), draw their blades, and burn towards your location.\n",
 		2,
 		{
 			{
 				"Fight", 
-				"ouchie",
-				-30, -10, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				"Your shields take a hit, but you send the pirates packing after a couple well-placed blaster shots",
+				-10, -10, -50, 0, 0, 0, 0, 0, 0, 0, 0
 			},
 			{
 				"Flee", 
-				"zooooooooooom",
-				-10, -10, -20, 0, 0, 0, 0, 0, 0, 0, 0
+				"You burn the engines hard, narrowly missing swipes from their cutlasses and rapiers. The sad squawk of a parrot is barely audible over the commotion",
+				-50, -10, 0, 0, 0, 0, 0, 0, 0, 0, 0
 			}
 		}
 	};
 
 	game_events[1] = (Event){
 		"PAPA ZORB'S PIZZA",
-		"You spot a rusty red shack nestled in an asteroid.\"Welcome to Papa Zorb's, home of the glorpiest pizza in the galaxy. What can i getcha?\"\n",
+		"You spot a rusty red shack nestled in an asteroid. A pimply alien in a red hat greets you: \"Welcome to Papa Zorb's, home of the glorpiest pizza in the galaxy. You want anything?\"\n",
 		3,
 		{
 			{
 				"Rob the pizza", 
-				"He doesn't react as you hop over the counter and pocket a greasy slice.",
-				-10, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				"He doesn't react as you hop over the counter and pocket a greasy slice. Your crew looks on in dismay.",
+				0, 50, 0, 0, 0, -50, 0, 0, 0, 0, 0
 			},
 			{
 				"Buy the pizza", 
-				"thx man $",
-				-10, 50, 0, -50, 0, 0, 0, 0, 0, 0, 0
+				"You hand the creature a couple crystals; he hands you a warm slice in a triangular cardboard box. Are slices normally this big?",
+				0, 50, 0, -30, 0, 0, 0, 0, 0, 0, 0
 			},
 			{
-				"Leave emptyhanded", 
-				"aight",
-				-10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				"Keep flying", 
+				"You've got a mission at hand; no time for fast food! You see your crew salivating.",
+				-10, -10, 0, 0, 0, -50, 0, 0, 0, 0, 0
 			}
 		}
 	};
 
 	game_events[2] = (Event){
 		"CAUGHT REDHANDED",
-		"One night, you can't sleep. You decide to go on a walk around the state instead. What's this?! You catch the doctor smoking! NASA treats everything flammable like the plague.",
+		"A nightmare of crashing into Mars jolts you out of a deep sleep. Groggy, you decide to go on a walk in the centrifugal ring. Is that... your crewmember? ...putting out a cigarette?",
 		3,
 		{
 			{
 				"Chew him out", 
-				"wow how original",
-				0, 0, 0, 0, 0, -20, 0, 0, 0, 0, 0
+				"You were trained for this; NASA treats everything flammable like the plague. You lecture him about crew endangerment, and then go back to bed.",
+				0, -10, 0, 0, 0, -40, 0, 0, 0, 0, 0
 			},
 			{
-				"Fuck it. Pass me one", 
-				"hel yea bruder",
-				0, 0, 0, 0, 1, 20, 0, 0, 0, 0, 0
+				"Ask for one yourself", 
+				"You ask. Nervously, he mumbles something about it being a hard mission for everyone and passes you a cigarette. You go back to bed.",
+				0, -10, 0, 0, 1, 20, 0, 0, 0, 0, 0
 			},
 			{
-				"Walk away. Pretend it didn't happen",
-				"seeya",
-				0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0
+				"Go back to bed",
+				"You turn around and pretend you didn't see anything. You go back to bed.",
+				0, -10, 0, 0, 0, 20, 0, 0, 0, 0, 0
 			}
 		}
 	};
 
 	game_events[3] = (Event){
 		"PLUG'S BUTT-UGLY FUEL TANKER",
-		"An old man with a white handlebar mustasche in an 18-wheeler fuel truck pulls up next to you. \"I've been moving this cargo for 3 weeks straight now. Got anything to take the edge off?\"",
+		"An old man with a white handlebar mustasche in an 18-wheeler fuel truck pulls up next to you. \"Ih've been movin this cargo for 3 weeks straight naw. Got anythin to take tha edge off?\"",
 		3,
 		{
 			{
-				"Sorry; supplies are tight",
-				"no worries bruv",
-				-10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				"Refuse",
+				"He yells something about fancy city folk and speeds off angrily. Your crew hang their head slightly.",
+				-10, -10, 0, 0, 0, -30, 0, 0, 0, 0, 0
 			},
 			{
 				"Give him a tortilla",
-				"o hel yea astronaut bread",
-				30, -10, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				"He graciously accepts. As thanks, he adds a bit of fuel to the ship's tank and rambles about his daughter. The crew seem to enjoy talking with another human",
+				30, -20, 0, 0, 0, 30, 0, 0, 0, 0, 0
 			},
 			{
 				"Give him a cigarette",
-				"smoooooooth mhm",
-				300, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0
+				"His eyes light up! He whips out a lighter and immediately begins puffing it. As thanks, he adds a significant amount of fuel to the ship's tank and regales the crew with stories of wild nights on New Las Vegas, Enceladus. The crew seem to enjoy talking with another human.",
+				300, -10, 0, 0, -1, 40, 0, 0, 0, 0, 0
 			}
 		}
 	};
 
 	game_events[4] = (Event){
 		"ALIEN CAPITALISTS",
-		"Long-tentacled aliens with 5 large green eyes knock politely on your state door. \"Wxould yxou lxike txo txrade sxome fxuel txo uxs? wxe wxill cxompensate yxou axs bxest wxe cxan.\" They wait patiently for your reply.",
+		"Long-tentacled aliens with 5 large green eyes knock politely on your ship door. \"Wxould yxou lxike txo txrade wxith uxs? wxe wxill cxompensate yxou axs bxest wxe cxan.\" A small, uncontrolled giggle rises out of you at their appearance. Very unprofessional. Very unastronaut. They don't react, and wait patiently for your reply.",
 		4,
 		{
 			{
-				"Sorry; supplies are tight",
-				"fine :(",
-				-10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				"Refuse",
+				"They inform you: \"Wxe uxnderstand sxupplies axre txight. Bxest wxishes oxn yxour fxuture exndeavors.\" They fly away.",
+				0, -10, 0, 0, 0, 0, 0, 0, 0, 0, 0
 			},
 			{
-				"They look funny! Call them the worst word you know.",
-				"why woud u do that",
-				-30, 0, -90, 0, 0, 30, 0, 0, 0, 0, 0
+				"Call them the worst word you know.",
+				"They inform you: \"Yxour cxonduct wxill bxe rxemembered.\" as they furrow the area of their body where a brow would go. They make note of your ship's serial number and fly away. Your crew is disconcerted.",
+				0, -10, 0, 0, 0, -20, 0, 0, 0, 0, 0
 			},
 			{
-				"We can spare a little",
-				"hel yea :)",
-				-20, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0
+				"Trade them 80 crystals.",
+				"They inform you: \"Wxe axppreciate txhe bxusiness.\" and deposit a sizeable amount of food into your ship's storage bay.",
+				0, 100, 0, -80, 0, 0, 0, 0, 0, 0, 0
 			},
 			{
-				"Fuck it; take almost everything",
-				"BIG W",
-				-200, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0
+				"Trade them 200 fuel.",
+				"They inform you: \"Txhis ixs qxuite exxceptional mxaterial.\" and deposit a their most valuable object into your ship's storage bay.",
+				-200, -10, 0, 0, 0, 0, 1, 0, 0, 0, 0
 			}
 		}
 	};
