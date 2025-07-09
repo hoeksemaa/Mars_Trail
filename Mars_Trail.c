@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
 	// gameplay
 	Gamestate state = {100, 100, 100, 100, 0, 100, 0, 1, 1, 1, 1};
 	Event* events = initialize_events();
-	int num_events = 12;
+	int num_events = 9;
 	int user_choice;
 	Event* current_event;
 	
@@ -271,8 +271,8 @@ Event* initialize_events() {
 			},
 			{
 				"Fly into it.",
-				"You burn the engines to change course. As the wormhole engulfs you, everything goes black and you get a funny feeling.",
-				-30, -10, 0, 0, 0, 0, 0, 0, 0, 0, 2
+				"You burn the engines while the crew screams with fear. As the wormhole engulfs you, everything goes black and you get a funny feeling.",
+				-30, -10, 0, 0, 0, -20, 0, 0, 0, 0, 2
 			}
 		}
 	};
@@ -346,6 +346,7 @@ Event* initialize_events() {
 		}
 	};
 
+	/*
 	game_events[9] = (Event){
 		"OLD LADY",
 		"u see an old lady at a crosswalk.",
@@ -363,7 +364,7 @@ Event* initialize_events() {
 			}
 		}
 	};
-
+	
 	game_events[10] = (Event){
 		"WHALES",
 		"you see a pod of whales off of the port side of the ship. one of them glistens white, and has a harpoon scar running on its back.",
@@ -414,7 +415,8 @@ Event* initialize_events() {
 			}
 		}
 	};
-	
+	*/
+
 	return game_events;
 }
 
