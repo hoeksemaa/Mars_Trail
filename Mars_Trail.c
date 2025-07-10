@@ -97,8 +97,6 @@ int main(int argc, char *argv[]) {
 		if (is_game_over(&state) == true) {
 			break;
 		}
-		
-		state.month++;
 	}
 	
 	return 0;
@@ -145,277 +143,259 @@ Event* initialize_events() {
 	static Event game_events[MAX_EVENTS];
 
 	game_events[0] = (Event){
-		"PIRATES",
-		"Pirates spot your ship! They raise a black flag (it doesn't flutter), draw their blades, and burn towards your location.\n",
-		2,
+		.title = "PIRATES",
+		.description = "Pirates spot your ship! They raise a black flag (it doesn't flutter), draw their blades, and burn towards your location.\n",
+		.num_choices = 2,
 		{
 			{
-				"Fight", 
-				"Your shields take a hit, but you send the pirates packing after a couple well-placed blaster shots",
-				-10, -10, -50, 0, 0, 0, 0, 0, 0, 0, 0
+				.description = "Fight", 
+				.result = "Your shields take a hit, but you send the pirates packing after a couple well-placed blaster shots",
+				.fuel_delta = -10,
+				.food_delta = -10,
+				.shields_delta = -50,
+				.month_delta = 1
 			},
 			{
-				"Flee", 
-				"You burn the engines hard, narrowly missing swipes from their cutlasses and rapiers. The sad squawk of a parrot is barely audible over the commotion",
-				-50, -10, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				.description = "Flee", 
+				.result = "You burn the engines hard, narrowly missing swipes from their cutlasses and rapiers. The sad squawk of a parrot is barely audible over the commotion",
+				.fuel_delta = -50,
+				.food_delta = -10,
+                                .month_delta = 1
 			}
 		}
 	};
 
 	game_events[1] = (Event){
-		"PAPA ZORB'S PIZZA",
-		"You spot a rusty red shack nestled in an asteroid. A pimply alien in a red hat greets you: \"Welcome to Papa Zorb's, home of the glorpiest pizza in the galaxy. You want anything?\"\n",
-		3,
+		.title = "PAPA ZORB'S PIZZA",
+		.description = "You spot a rusty red shack nestled in an asteroid. A pimply alien in a red hat greets you: \"Welcome to Papa Zorb's, home of the glorpiest pizza in the galaxy. You want anything?\"\n",
+		.num_choices = 3,
 		{
 			{
-				"Rob the pizza", 
-				"He doesn't react as you hop over the counter and pocket a greasy slice. Your crew looks on in dismay.",
-				0, 50, 0, 0, 0, -50, 0, 0, 0, 0, 0
+				.description = "Rob the pizza", 
+				.result = "He doesn't react as you hop over the counter and pocket a greasy slice. Your crew looks on in dismay.",
+				.food_delta = 50,
+				.morale_delta = -50,
+                                .month_delta = 1
 			},
 			{
-				"Buy the pizza", 
-				"You hand the creature a couple crystals; he hands you a warm slice in a triangular cardboard box. Are slices normally this big?",
-				0, 50, 0, -30, 0, 0, 0, 0, 0, 0, 0
+				.description = "Buy the pizza", 
+				.result = "You hand the creature a couple crystals; he hands you a warm slice in a triangular cardboard box. Are slices normally this big?",
+				.food_delta = 50,
+				.crystals_delta = -30,
+                                .month_delta = 1
 			},
 			{
-				"Keep flying", 
-				"You've got a mission at hand; no time for fast food! You see your crew salivating.",
-				-10, -10, 0, 0, 0, -50, 0, 0, 0, 0, 0
+				.description = "Keep flying", 
+				.result = "You've got a mission at hand; no time for fast food! You see your crew salivating.",
+				.fuel_delta = -10,
+				.food_delta = -10,
+				.morale_delta = -50,
+                                .month_delta = 1
 			}
 		}
 	};
 
 	game_events[2] = (Event){
-		"CAUGHT REDHANDED",
-		"A nightmare of crashing into Mars jolts you out of a deep sleep. Groggy, you decide to go on a walk in the centrifugal ring. Is that... your crewmember? ...putting out a cigarette?",
-		3,
+		.title = "CAUGHT REDHANDED",
+		.description = "A nightmare of crashing into Mars jolts you out of a deep sleep. Groggy, you decide to go on a walk in the centrifugal ring. Is that... your crewmember? ...putting out a cigarette?",
+		.num_choices = 3,
 		{
 			{
-				"Chew him out", 
-				"You were trained for this; NASA treats everything flammable like the plague. You lecture him about crew endangerment, and then go back to bed.",
-				0, -10, 0, 0, 0, -40, 0, 0, 0, 0, 0
+				.description = "Chew him out", 
+				.result = "You were trained for this; NASA treats everything flammable like the plague. You lecture him about crew endangerment, and then go back to bed.",
+				.food_delta = -10,
+				.morale_delta = -40,
+                                .month_delta = 1
 			},
 			{
-				"Ask for one yourself", 
-				"You ask. Nervously, he mumbles something about it being a hard mission for everyone and passes you a cigarette. You go back to bed.",
-				0, -10, 0, 0, 1, 20, 0, 0, 0, 0, 0
+				.description = "Ask for one yourself", 
+				.result = "You ask. Nervously, he mumbles something about it being a hard mission for everyone and passes you a cigarette. You go back to bed.",
+				.food_delta = -10,
+				.cigarettes_delta = 1,
+				.morale_delta = 20,
+                                .month_delta = 1
 			},
 			{
-				"Go back to bed",
-				"You turn around and pretend you didn't see anything. You go back to bed.",
-				0, -10, 0, 0, 0, 20, 0, 0, 0, 0, 0
+				.description = "Go back to bed",
+				.result = "You turn around and pretend you didn't see anything. You go back to bed.",
+				.food_delta = -10,
+				.morale_delta = 20,
+                                .month_delta = 1
 			}
 		}
 	};
 
 	game_events[3] = (Event){
-		"PLUG'S BUTT-UGLY FUEL TANKER",
-		"An old man with a white handlebar mustasche in an 18-wheeler fuel truck pulls up next to you. \"Ih've been movin this cargo for 3 weeks straight naw. Got anythin to take tha edge off?\"",
-		3,
+		.title = "PLUG'S BUTT-UGLY FUEL TANKER",
+		.description = "An old man with a white handlebar mustasche in an 18-wheeler fuel truck pulls up next to you. \"Ih've been movin this cargo for 3 weeks straight naw. Got anythin to take tha edge off?\"",
+		.num_choices = 3,
 		{
 			{
-				"Refuse",
-				"He yells something about fancy city folk and speeds off angrily. Your crew hang their head slightly.",
-				-10, -10, 0, 0, 0, -30, 0, 0, 0, 0, 0
+				.description = "Refuse",
+				.result = "He yells something about fancy city folk and speeds off angrily. Your crew hang their head slightly.",
+				.fuel_delta = -10,
+				.food_delta = -10,
+				.morale_delta = -30,
+                                .month_delta = 1
 			},
 			{
-				"Give him a tortilla",
-				"He graciously accepts. As thanks, he adds a bit of fuel to the ship's tank and rambles about his daughter. The crew seem to enjoy talking with another human",
-				30, -20, 0, 0, 0, 30, 0, 0, 0, 0, 0
+				.description = "Give him a tortilla",
+				.result = "He graciously accepts. As thanks, he adds a bit of fuel to the ship's tank and rambles about his daughter. The crew seem to enjoy talking with another human",
+				.fuel_delta = 30,
+				.food_delta = -20,
+				.morale_delta = 30,
+                                .month_delta = 1
 			},
 			{
-				"Give him a cigarette",
-				"His eyes light up! He whips out a lighter and immediately begins puffing it. As thanks, he adds a significant amount of fuel to the ship's tank and regales the crew with stories of wild nights on New Las Vegas, Enceladus. The crew seem to enjoy talking with another human.",
-				300, -10, 0, 0, -1, 40, 0, 0, 0, 0, 0
+				.description = "Give him a cigarette",
+				.result = "His eyes light up! He whips out a lighter and immediately begins puffing it. As thanks, he adds a significant amount of fuel to the ship's tank and regales the crew with stories of wild nights on New Las Vegas, Enceladus. The crew seem to enjoy talking with another human.",
+				.fuel_delta = 300,
+				.food_delta = -10,
+				.cigarettes_delta = -1,
+				.morale_delta = 40,
+                                .month_delta = 1
 			}
 		}
 	};
 
 	game_events[4] = (Event){
-		"ALIEN CAPITALISTS",
-		"Long-tentacled aliens with 5 large green eyes knock politely on your ship door. \"Wxould yxou lxike txo txrade wxith uxs? wxe wxill cxompensate yxou axs bxest wxe cxan.\" A small, uncontrolled giggle rises out of you at their appearance. Very unprofessional. Very unastronaut. They don't react, and wait patiently for your reply.",
-		4,
+		.title = "ALIEN CAPITALISTS",
+		.description = "Long-tentacled aliens with 5 large green eyes knock politely on your ship door. \"Wxould yxou lxike txo txrade wxith uxs? wxe wxill cxompensate yxou axs bxest wxe cxan.\" A small, uncontrolled giggle rises out of you at their appearance. Very unprofessional. Very unastronaut. They don't react, and wait patiently for your reply.",
+		.num_choices = 4,
 		{
 			{
-				"Refuse",
-				"They inform you: \"Wxe uxnderstand sxupplies axre txight. Bxest wxishes oxn yxour fxuture exndeavors.\" They fly away.",
-				0, -10, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				.description = "Refuse",
+				.result = "They inform you: \"Wxe uxnderstand sxupplies axre txight. Bxest wxishes oxn yxour fxuture exndeavors.\" They fly away.",
+				.food_delta = -10,
+                                .month_delta = 1
 			},
 			{
-				"Call them the worst word you know.",
-				"They inform you: \"Yxour cxonduct wxill bxe rxemembered.\" as they furrow the area of their body where a brow would go. They make note of your ship's serial number and fly away. Your crew is disconcerted.",
-				0, -10, 0, 0, 0, -20, 0, 0, 0, 0, 0
+				.description = "Call them the worst word you know.",
+				.result = "They inform you: \"Yxour cxonduct wxill bxe rxemembered.\" as they furrow the area of their body where a brow would go. They make note of your ship's serial number and fly away. Your crew is disconcerted.",
+				.food_delta = -10,
+				.morale_delta = -20,
+                                .month_delta = 1
 			},
 			{
-				"Trade them 80 crystals.",
-				"They inform you: \"Wxe axppreciate txhe bxusiness.\" and deposit a sizeable amount of food into your ship's storage bay.",
-				0, 100, 0, -80, 0, 0, 0, 0, 0, 0, 0
+				.description = "Trade them 80 crystals.",
+				.result = "They inform you: \"Wxe axppreciate txhe bxusiness.\" and deposit a sizeable amount of food into your ship's storage bay.",
+				.food_delta = 100,
+				.crystals_delta = -80,
+                                .month_delta = 1
 			},
 			{
-				"Trade them 200 fuel.",
-				"They inform you: \"Txhis ixs qxuite exxceptional mxaterial.\" and deposit a their most valuable object into your ship's storage bay.",
-				-200, -10, 0, 0, 0, 0, 1, 0, 0, 0, 0
+				.description = "Trade them 200 fuel.",
+				.result = "They inform you: \"Txhis ixs qxuite exxceptional mxaterial.\" and deposit a their most valuable object into your ship's storage bay.",
+				.fuel_delta = -200,
+				.food_delta = -10,
+				.tires_delta = 1,
+                                .month_delta = 1
 			}
 		}
 	};
 
 	game_events[5] = (Event){
-		"WORMHOLE",
-		"The ship's sensors pick up a wormhole, about 200 kilometers out. You've never seen a worm's hole before.",
-		2,
+		.title = "WORMHOLE",
+		.description = "The ship's sensors pick up a wormhole, about 200 kilometers out. You've never seen a worm's hole before.",
+		.num_choices = 2,
 		{
 			{
-				"Keep flying.",
-				"The crew sighs with relief. They've never seen a worm's hole either.",
-				0, -10, 0, 0, 0, 10, 0, 0, 0, 0, 0
+				.description = "Keep flying.",
+				.result = "The crew sighs with relief. They've never seen a worm's hole either.",
+				.food_delta = -10,
+				.morale_delta = 10,
+                                .month_delta = 1
 			},
 			{
-				"Fly into it.",
-				"You burn the engines while the crew screams with fear. As the wormhole engulfs you, everything goes black and you get a funny feeling.",
-				-30, -10, 0, 0, 0, -20, 0, 0, 0, 0, 2
+				.description = "Fly into it.",
+				.result = "You burn the engines while the crew screams with fear. As the wormhole engulfs you, everything goes black and you get a funny feeling.",
+				.fuel_delta = -30,
+				.food_delta = -10,
+				.morale_delta = -20,
+				.month_delta = 3
 			}
 		}
 	};
 
 	game_events[6] = (Event){
-		"SNAKE",
-		"The pilot has suited up in his EVA suit and is changing the spacestate's flat tire. Suddenly, a snake rushes out of the darkness and sinks its teeth into the pilot's ankle! The pilot is beginning to bleed out...",
-		2,
+		.title = "SNAKE",
+		.description = "The pilot has suited up in his EVA suit and is changing the spacestate's flat tire. Suddenly, a snake rushes out of the darkness and sinks its teeth into the pilot's ankle! The pilot is beginning to bleed out...",
+		.num_choices = 2,
 		{
 			{
-				"Let the pilot die. There's no way to save him",
-				"seeya later space cowboy",
-				0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0
+				.description = "Let the pilot die. There's no way to save him",
+				.result = "seeya later space cowboy",
+				.food_delta = -10,
+				.morale_delta = -50,
+				.month_delta = 1
 			},
 			{
-				"Kill the doctor and give his blood to the pilot. It might stabilize him",
-				"ashes to ashes, dust to dust",
-				0, 0, 0, 0, 0, 10, 0, 0, -1, 0, 0
+				.description = "Kill the doctor and give his blood to the pilot. It might stabilize him",
+				.result = "ashes to ashes, dust to dust",
+				.food_delta = -10,
+				.morale_delta = -10,
+				.month_delta = 1
 			}
 		}
 	};
 
 	game_events[7] = (Event){
-		"VISIT FROM THE IRS",
-		"You're sipping your morning coffee when you hear a loud banging on the state's entry port. \"THIS IS THE IRS. OUR RECORDS INDICATE YOU HAVE SIGNIFICANT UNPAID TAX LIABILITIES FROM THE PAST FIVE YEARS. YOU WILL LET US IN AND PROVIDE ALL FINANCIAL RECORDS UP TO TWELVE YEARS IN THE PAST.\"",
-		4,
+		.title = "VISIT FROM THE IRS",
+		.description = "You're sipping your morning coffee when you hear a loud banging on the state's entry port. \"THIS IS THE IRS. OUR RECORDS INDICATE YOU HAVE SIGNIFICANT UNPAID TAX LIABILITIES FROM THE PAST FIVE YEARS. YOU WILL LET US IN AND PROVIDE ALL FINANCIAL RECORDS UP TO TWELVE YEARS IN THE PAST.\"",
+		.num_choices = 4,
 		{
 			{
-				"We're getting out of here! Engines to max! Flee the scene.",
-				"ugly death",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				.description = "We're getting out of here! Engines to max! Flee the scene.",
+				.result = "ugly death",
+				.food_delta = -10,
+				.month_delta = 1
 			},
 			{
-				"I'm not going down without a fight! Draw your NASA-standard-issue S&W revolver",
-				"cowboy death",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				.description = "I'm not going down without a fight! Draw your NASA-standard-issue S&W revolver",
+				.result = "cowboy death",
+				.food_delta = -10,
+				.month_delta = 1
 			},
 			{
-				"I'm sure you're mistaken. Make a large contribution to the agent's child's college fund.",
-				"al capone death",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				.description = "I'm sure you're mistaken. Make a large contribution to the agent's child's college fund.",
+				.result = "al capone death",
+				.food_delta = -10,
+				.month_delta = 1
 			},
 			{
-				"Sigh heavily. Let them in.",
-				"normal old death",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				.description = "Sigh heavily. Let them in.",
+				.result = "normal old death",
+				.food_delta = -10,
+				.month_delta = 1
 			}
 		}
 	};
 
 	game_events[8] = (Event){
-		"LEIF ERIKSON",
-		"You find famed explorer Leif Erikson drifting through space, alive and kicking at the ripe age of 1050 years old. He looks up from studying a star map. \"I'm famished! Got anything to eat?\" You notice he's circled a portion of his map and labelled it \"Fuel cloud\"",
-		3,
+		.title = "LEIF ERIKSON",
+		.description = "You find famed explorer Leif Erikson drifting through space, alive and kicking at the ripe age of 1050 years old. He looks up from studying a star map. \"I'm famished! Got anything to eat?\" You notice he's circled a portion of his map and labelled it \"Fuel cloud\"",
+		.num_choices = 3,
 		{
 			{
-				"Give him some food. He's probably got some crazy stories",
-				"lemme tell you about the time i fought the britains",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				.description = "Give him some food. He's probably got some crazy stories",
+				.result = "lemme tell you about the time i fought the britains",
+				.food_delta = -10,
+				.month_delta = 1
 			},
 			{
-				"Track down this fuel cloud",
-				"huffing fuel XD",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				.description = "Track down this fuel cloud",
+				.result = "huffing fuel XD",
+				.food_delta = -10,
+				.month_delta = 1
 			},
 			{
-				"Ignore him. He weirds me out",
-				"fuckn jerk",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+				.description = "Ignore him. He weirds me out",
+				.result = "fuckn jerk",
+				.food_delta = -10,
+				.month_delta = 1
 			}
 		}
 	};
-
-	/*
-	game_events[9] = (Event){
-		"OLD LADY",
-		"u see an old lady at a crosswalk.",
-		2,
-		{
-			{
-				"Help her cross.",
-				"good citizen",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 
-			},
-			{
-				"Ignore her; keep flying by",
-				"bad bad bad citizen",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-			}
-		}
-	};
-	
-	game_events[10] = (Event){
-		"WHALES",
-		"you see a pod of whales off of the port side of the ship. one of them glistens white, and has a harpoon scar running on its back.",
-		3,
-		{
-			{
-				"look for a while.",
-				"very cool",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-			},
-			{
-				"take a picture.",
-				"itll last longer",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-			},
-			{
-				"keep flying",
-				"important business to attend to",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-			}
-		}
-	};
-
-	game_events[11] = (Event){
-		"SATELLITE",
-		"a starlink satellite is slowly approaching your ship, and the radio picks up some of its chatter. it seems.... distant.... incoherent.... corrupted. it asks to dock with the ship.",
-		4,
-		{
-			{
-				"fly away",
-				"ok :(",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-			},
-			{
-				"open fire",
-				"it fires back",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-			},
-			{
-				"try to hack it",
-				"zeep zorp zop",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-			},
-			{
-				"let it dock",
-				"it accepts >:)",
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-			}
-		}
-	};
-	*/
 
 	return game_events;
 }
