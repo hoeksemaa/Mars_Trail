@@ -319,21 +319,23 @@ Event* initialize_events() {
 
 	game_events[6] = (Event){
 		.title = "SNAKE",
-		.description = "The pilot has suited up in his EVA suit and is changing the spacestate's flat tire. Suddenly, a snake rushes out of the darkness and sinks its teeth into the pilot's ankle! The pilot is beginning to bleed out...",
+		.description = "You notice air hissing out of one of the ship's tires. The pilot dons an EVA suit with practiced, fluid motions. He's done this a million times. He used to be a trucker operating out of the Enceladus corridor. As he slips the lug wrench over a nut, a snake slithers out of the galactic darkness and sinks its teeth into his ankle.  The pilot is rapidly losing blood.",
 		.num_choices = 2,
 		{
 			{
-				.description = "Let the pilot die. There's no way to save him",
-				.result = "seeya later space cowboy",
+				.description = "Let the pilot die.",
+				.result = "It's too late. You softly mumble \"See you, space cowboy...\" as the pilot's blood is rapidly evacuated into space.",
 				.food_delta = -10,
 				.morale_delta = -50,
+				.pilot_delta = -1,
 				.month_delta = 1
 			},
 			{
-				.description = "Kill the doctor and give his blood to the pilot. It might stabilize him",
-				.result = "ashes to ashes, dust to dust",
+				.description = "Kill the doctor and harvest his blood.",
+				.result = "You grimace, stabbing both the pilot and the doctor with thick needles. As color returns to the pilot, the doctor withers away.",
 				.food_delta = -10,
 				.morale_delta = -10,
+				.doctor_delta = -1,
 				.month_delta = 1
 			}
 		}
@@ -345,27 +347,34 @@ Event* initialize_events() {
 		.num_choices = 4,
 		{
 			{
-				.description = "We're getting out of here! Engines to max! Flee the scene.",
-				.result = "ugly death",
+				.description = "Flee.",
+				.result = "You crank engines to the max in a desperate attempt to flee. The agent fires a muon beam through your engine, instantly deactivating it. The IRS boards and ransacks your records.",
 				.food_delta = -10,
+				.shields_delta = -80,
+				.crystals_delta = -20,
 				.month_delta = 1
 			},
 			{
-				.description = "I'm not going down without a fight! Draw your NASA-standard-issue S&W revolver",
-				.result = "cowboy death",
+				.description = "Fight.",
+				.result = "The agent boards your ship and you draw your NASA standard-issue S&W revolver. You shakily fire off a shot, but he ducks out of the way and backhands you into unconsciousness. The IRS ransacks your records.",
 				.food_delta = -10,
+				.morale_delta = -30,
+				.crystals_delta = -20,
 				.month_delta = 1
 			},
 			{
-				.description = "I'm sure you're mistaken. Make a large contribution to the agent's child's college fund.",
-				.result = "al capone death",
+				.description = "Bribe him.",
+				.result = "The agent board, and you put on your most sauve voice: \"I'm sure you're mistaken. I made a large contribution to the Children of IRS College Fund.\" The agent gives you a dead-eyed smile. \"That's very kind.\" The IRS ransacks your records.",
 				.food_delta = -10,
+				.morale_delta = -10,
+				.crystals_delta = -20,
 				.month_delta = 1
 			},
 			{
-				.description = "Sigh heavily. Let them in.",
-				.result = "normal old death",
+				.description = "Let him in.",
+				.result = "You sigh heavily and let him in. The IRS boards and ransacks your records.",
 				.food_delta = -10,
+				.crystals_delta = -20,
 				.month_delta = 1
 			}
 		}
@@ -373,25 +382,28 @@ Event* initialize_events() {
 
 	game_events[8] = (Event){
 		.title = "LEIF ERIKSON",
-		.description = "You find famed explorer Leif Erikson drifting through space, alive and kicking at the ripe age of 1050 years old. He looks up from studying a star map. \"I'm famished! Got anything to eat?\" You notice he's circled a portion of his map and labelled it \"Fuel cloud\"",
+		.description = "You find famed explorer Leif Erikson drifting through space, alive and kicking at the ripe age of 1050 years old. He looks up from studying a star map. \"I'm famished! Got anything to eat?\" You notice his pockets bulge.",
 		.num_choices = 3,
 		{
 			{
-				.description = "Give him some food. He's probably got some crazy stories",
-				.result = "lemme tell you about the time i fought the britains",
-				.food_delta = -10,
+				.description = "Give him some food.",
+				.result = "He regales the crew of tales of discovering the area now known as New York City. A bit aggravated, he insists he named the place Eriksonia. The crew loves this and refuse to use the city's modern name.",
+				.food_delta = -30,
+				.morale_delta = 60,
 				.month_delta = 1
 			},
 			{
-				.description = "Track down this fuel cloud",
-				.result = "huffing fuel XD",
+				.description = "Rob him.",
+				.result = "For a 1050-year-old, he puts up quite a fight! You trade blows and he soon floats away into the darkness with a black eye. You manage to swipe 10 crystals from his pocket in the tussle.",
 				.food_delta = -10,
+				.crystals_delta = 10,
 				.month_delta = 1
 			},
 			{
-				.description = "Ignore him. He weirds me out",
-				.result = "fuckn jerk",
+				.description = "Keep on flying.",
+				.result = "Your crew looks aghast that you're leaving a fellow human in the dust. Weirdly, they don't question how he's lived that long.",
 				.food_delta = -10,
+				.morale_delta = -20,
 				.month_delta = 1
 			}
 		}
