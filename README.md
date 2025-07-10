@@ -14,5 +14,8 @@ yes
 Compile:
 ```./build.sh```
 
-Execute:
+Execute fixed seed game:
 ```./Mars_Trail```
+
+Execute specified seed game:
+```./Mars_Trail 123```
