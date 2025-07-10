@@ -48,7 +48,7 @@ typedef struct {
 void greeting();
 void print_state_attributes(Gamestate *state);
 Event* initialize_events();
-Event* get_random_event(Event* events, int num_events);
+Event* get_random_event(Event* events, int num_events, bool used_events[]);
 int get_user_choice(Event* event);
 void apply_choice(Gamestate *state, Event* current_event, int user_choice);
 bool is_game_over(Gamestate *state);
@@ -73,6 +73,7 @@ int main(int argc, char *argv[]) {
 	// gameplay
 	Gamestate state = {100, 100, 100, 100, 0, 100, 0, 1, 1, 1, 1};
 	Event* events = initialize_events();
+	bool used_events[MAX_EVENTS] = {false};
 	int num_events = 9;
 	int user_choice;
 	Event* current_event;
@@ -86,7 +87,7 @@ int main(int argc, char *argv[]) {
 
 		print_state_attributes(&state);
 		
-		current_event = get_random_event(events, num_events);
+		current_event = get_random_event(events, num_events, used_events);
 		
 		printf("EVENT: %s\n", current_event->title);
 		printf("%s", current_event->description);
@@ -412,8 +413,14 @@ Event* initialize_events() {
 	return game_events;
 }
 
-Event* get_random_event(Event* events, int num_events) {
+Event* get_random_event(Event* events, int num_events, bool used_events[]) {
 	int idx = rand() % num_events;
+	
+	// if the event has already been used, pick another one
+	while (used_events[idx] == true) { idx = rand() % num_events; }
+	
+	used_events[idx] = true;
+
 	return &events[idx];
 }
 
@@ -461,7 +468,7 @@ bool is_game_over(Gamestate *state) {
 		return true;
 	
 	// secret ending
-	} else if (state->tires >= 1) {
+	} else if (state->tires >= 1 && state->month >= 10) {
 		printf("You safely touch down on the planet Mars! A martian farmer saunters up to you: i'll trade you 5000 acres for that tire. You did good.\n");
 		return true;
 
