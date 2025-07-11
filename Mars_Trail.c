@@ -68,9 +68,8 @@ int main(int argc, char *argv[]) {
 	}
 
 	srand(seed);
-	printf("using seed: %d\n", seed);
 
-	// gameplay
+	// game setup
 	Gamestate state = {100, 100, 100, 100, 0, 100, 0, 1, 1, 1, 1};
 	Event* events = initialize_events();
 	bool used_events[MAX_EVENTS] = {false};
@@ -78,23 +77,23 @@ int main(int argc, char *argv[]) {
 	int user_choice;
 	Event* current_event;
 	
+	// beginning
+	system("clear");
 	greeting();
+	getchar();
 
+	// main gameloop
 	while (state.month < 10) {
 
-		//system("clear");
-		printf("It's month %d\n", state.month);
+		system("clear");
 
 		print_state_attributes(&state);
 		
 		current_event = get_random_event(events, num_events, used_events);
 		
-		printf("EVENT: %s\n", current_event->title);
-		printf("%s", current_event->description);
-
 		user_choice = get_user_choice(current_event);
 		apply_choice(&state, current_event, user_choice);
-
+		
 		if (is_game_over(&state) == true) {
 			break;
 		}
@@ -104,27 +103,40 @@ int main(int argc, char *argv[]) {
 }
 
 void greeting() {
-	printf("Liftoff! NASA has sent you on a one-way 9-month Hohmann transfer mission to Mars. Getting there (after your initial burn) should be easy; getting there in one piece may be hard. Manage your resources carefully.\n");
+	printf("\n");
+	printf(" > Liftoff! NASA has sent you on a one-way 9-month Hohmann transfer mission to Mars. Getting there (after your initial burn) should be easy; getting there in one piece may be hard. Manage your resources carefully.\n");
+	printf("\n");
+	printf(" > Please hit enter to continue... ");
 }
 
 void print_state_attributes(Gamestate *state) {
-	printf("Gamestate Status:\n");
-	printf("	Fuel:       %*d\n", MAX_WIDTH, state->fuel);
-	printf("	Food:       %*d\n", MAX_WIDTH, state->food);
-	printf("	Shields:    %*d\n", MAX_WIDTH, state->shields);
-	printf("        Crystals:   %*d\n", MAX_WIDTH, state->crystals);
-	printf("        Cigarettes: %*d\n", MAX_WIDTH, state->cigarettes);
-	printf("        Morale:     %*d\n", MAX_WIDTH, state->morale);
-	printf("        Tires:      %*d\n", MAX_WIDTH, state->tires);
-	printf("        Pilot:      %*d\n", MAX_WIDTH, state->pilot);
-	printf("        Doctor:     %*d\n", MAX_WIDTH, state->doctor);
-	printf("        Scientist:  %*d\n", MAX_WIDTH, state->scientist);
+	printf("\n");
+	printf(" > The ships's internal computer reports that today is month %d.\n", state->month);
+	printf("\n");
+	printf(" > Ship Condition:\n");
+	printf(" >	Fuel:       %*d\n", MAX_WIDTH, state->fuel);
+	printf(" >	Shields:    %*d\n", MAX_WIDTH, state->shields);
+	printf(" >	Crystals:   %*d\n", MAX_WIDTH, state->crystals);
+	printf(" >\n");
+	printf(" > Inventory:\n");
+	printf(" >	Food:       %*d\n", MAX_WIDTH, state->food);
+	printf(" >	Morale:     %*d\n", MAX_WIDTH, state->morale);
+	printf(" >	Cigarettes: %*d\n", MAX_WIDTH, state->cigarettes);
+	printf(" >	Tires:      %*d\n", MAX_WIDTH, state->tires);
+	printf(" >\n");
+	printf(" > Crew:\n");
+	printf(" >	Pilot:      %*d\n", MAX_WIDTH, state->pilot);
+	printf(" >	Doctor:     %*d\n", MAX_WIDTH, state->doctor);
+	printf(" >	Scientist:  %*d\n", MAX_WIDTH, state->scientist);
+	printf("\n");
+	printf(" > -----------------------------------------------------------------\n");
+	printf("\n");
 }
 
 void apply_choice(Gamestate *state, Event* current_event, int user_choice) {
 	Choice *choice = &current_event->choices[user_choice - 1];
 
-	printf("\n%s\n", choice->result);
+	printf(" > \n%s\n", choice->result);
 
 	// apply the deltas to the gamestate
 	state->fuel       += choice->fuel_delta;
@@ -138,6 +150,10 @@ void apply_choice(Gamestate *state, Event* current_event, int user_choice) {
 	state->doctor     += choice->doctor_delta;
 	state->scientist  += choice->scientist_delta;
 	state->month      += choice->month_delta;
+
+	printf("\n > Press enter to continue...");
+	getchar();
+	getchar();
 }
 
 Event* initialize_events() {
@@ -145,7 +161,7 @@ Event* initialize_events() {
 
 	game_events[0] = (Event){
 		.title = "PIRATES",
-		.description = "Pirates spot your ship! They raise a black flag (it doesn't flutter), draw their blades, and burn towards your location.\n",
+		.description = "Pirates spot your ship! They raise a black flag (it doesn't flutter), draw their blades, and burn towards your location.",
 		.num_choices = 2,
 		{
 			{
@@ -168,7 +184,7 @@ Event* initialize_events() {
 
 	game_events[1] = (Event){
 		.title = "PAPA ZORB'S PIZZA",
-		.description = "You spot a rusty red shack nestled in an asteroid. A pimply alien in a red hat greets you: \"Welcome to Papa Zorb's, home of the glorpiest pizza in the galaxy. You want anything?\"\n",
+		.description = "You spot a rusty red shack nestled in an asteroid. A pimply alien in a red hat greets you: \"Welcome to Papa Zorb's, home of the glorpiest pizza in the galaxy. You want anything?\"",
 		.num_choices = 3,
 		{
 			{
@@ -427,12 +443,18 @@ Event* get_random_event(Event* events, int num_events, bool used_events[]) {
 int get_user_choice(Event* event) {
 	int user_choice;
 
-	printf("What do you want to do?\n");
+	printf(" > %s\n", event->title);
+	printf("\n");
+	printf(" > %s\n", event->description);
+	printf("\n");
+
+	printf(" > What do you want to do?\n");
 	for (int i = 0; i < event->num_choices; i++) {
-		printf("%d. %s\n", 1 + i, event->choices[i].description);
+		printf(" > %d. %s\n", 1 + i, event->choices[i].description);
 	}
 
-	printf("Enter your choice: ");
+	printf("\n");
+	printf(" > Enter your choice: ");
 	scanf("%d", &user_choice);
 
 	return user_choice;
