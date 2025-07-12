@@ -169,7 +169,7 @@ Event* initialize_events() {
 				.description = "Fight", 
 				.result = "Your shields take a hit, but you send the pirates packing after a couple well-placed blaster shots.",
 				.fuel_delta = -10,
-				.food_delta = -10,
+				.food_delta = -20,
 				.shields_delta = -50,
 				.month_delta = 1
 			},
@@ -177,7 +177,7 @@ Event* initialize_events() {
 				.description = "Flee", 
 				.result = "You burn the engines hard, narrowly missing swipes from their cutlasses and rapiers. The sad squawk of a parrot is barely audible over the commotion.",
 				.fuel_delta = -50,
-				.food_delta = -10,
+				.food_delta = -20,
                                 .month_delta = 1
 			}
 		}
@@ -328,7 +328,7 @@ Event* initialize_events() {
 				.description = "Fly into it",
 				.result = "You burn the engines while the crew screams with fear. As the wormhole engulfs you, everything goes black and you get a funny feeling.",
 				.fuel_delta = -30,
-				.food_delta = -10,
+				.food_delta = -20,
 				.morale_delta = -20,
 				.month_delta = 3
 			}
@@ -342,8 +342,8 @@ Event* initialize_events() {
 		{
 			{
 				.description = "Let the pilot die",
-				.result = "It's too late. You softly mumble \"See you, space cowboy...\" as the pilot's blood is rapidly evacuated into space.",
-				.food_delta = -10,
+				.result = "It's too late. He softly mumbles \"See you, space cowboy...\" as his blood is rapidly evacuated into space.",
+				.food_delta = -20,
 				.morale_delta = -50,
 				.pilot_delta = -1,
 				.month_delta = 1
@@ -351,7 +351,7 @@ Event* initialize_events() {
 			{
 				.description = "Kill the doctor and harvest his blood",
 				.result = "You grimace, stabbing both the pilot and the doctor with thick needles. As color returns to the pilot, the doctor withers away.",
-				.food_delta = -10,
+				.food_delta = -20,
 				.morale_delta = -10,
 				.doctor_delta = -1,
 				.month_delta = 1
@@ -367,7 +367,7 @@ Event* initialize_events() {
 			{
 				.description = "Flee",
 				.result = "You crank engines to the max in a desperate attempt to flee. The agent fires a muon beam through your engine, instantly deactivating it. The IRS boards and ransacks your records.",
-				.food_delta = -10,
+				.food_delta = -20,
 				.shields_delta = -80,
 				.crystals_delta = -20,
 				.month_delta = 1
@@ -375,7 +375,7 @@ Event* initialize_events() {
 			{
 				.description = "Fight",
 				.result = "The agent boards your ship and you draw your NASA standard-issue S&W revolver. You shakily fire off a shot, but he ducks out of the way and backhands you into unconsciousness. The IRS ransacks your records.",
-				.food_delta = -10,
+				.food_delta = -20,
 				.morale_delta = -30,
 				.crystals_delta = -20,
 				.month_delta = 1
@@ -487,28 +487,28 @@ bool is_game_over(Gamestate *state) {
 	// bad ending; no fuel when you get to mars
 	} else if (state->fuel <= 0 && state->month >= 10) {
 		printf("\n");
-		printf(" > With no fuel on board, you can't maneuver or decelerate as the ship hurtles towards the planet Mars. You smash into the cold rock and are instantly pulverized. A bloodied finger sails over the martian horizon and disappears. The end.\n");
+		printf(" > The great red planet Mars comes into view. With no fuel on board, you can't maneuver or decelerate as the ship hurtles forward. You smash into the cold rock and are instantly pulverized. A bloodied finger sails over the martian horizon and disappears. The end.\n");
 		printf("\n");
 		return true;
 
 	// bad ending: no pilot when you get to mars
 	} else if (state->pilot <= 0 && state->month >= 10) {
 		printf("\n");
-		printf(" > All of the ship controls look like hieroglyphs to you. You weren't trained to land the ship! Without the pilot, you helplessly jam buttons and pull levers as the ship jerks around. You smash into the cold rock and are instantly pulverized. A bloodied finger sails over the martian horizon and disappears. The end.\n");
+		printf(" > The great red planet Mars comes into view. All of the ship controls look like hieroglyphs to you. You weren't trained to land the ship! Without the pilot, you helplessly jam buttons and pull levers as the ship jerks around. You smash into the cold rock and are instantly pulverized. A bloodied finger sails over the martian horizon and disappears. The end.\n");
 		printf("\n");
 		return true;
 	
 	// secret ending
 	} else if (state->tires >= 1 && state->month >= 10) {
 		printf("\n");
-		printf(" > You safely touch down on the planet Mars! A martian farmer saunters up to you and shoves a contract into your gloved hands, greedily eyeing your tire. Confused, you foolishly sign. He snatches both the paper and the tire, hightailing it back to a large glass biodome in the distance. 10,000,000 credits are deposited into your personal bank account. The end.\n");
+		printf(" > The great red planet Mars comes into view. You safely touch down on the surface! A martian farmer saunters up to you and shoves a contract into your gloved hands, greedily eyeing your tire. Confused, you foolishly sign. He snatches both the paper and the tire, hightailing it back to a large glass biodome in the distance. 10,000,000 credits are deposited into your personal bank account. The end.\n");
 		printf("\n");
 		return true;
 
 	// good ending
 	} else if (state->month >= 10) {
 		printf("\n");
-		printf(" > You safely touch down on the planet Mars! You become national heroes back at home. Fortunately, you're not back at home. The end.\n");
+		printf(" > The great red planet Mars comes into view. You safely touch down on the surface! You become national heroes back at home. Fortunately, you're not back at home. The end.\n");
 		printf("\n");
 		return true;
 	}
