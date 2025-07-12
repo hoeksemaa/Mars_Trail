@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
 
 void greeting() {
 	printf("\n");
-	printf(" > Liftoff! NASA has sent you on a one-way 9-month Hohmann transfer mission to Mars. Getting there (after your initial burn) should be easy; getting there in one piece may be hard. Manage your resources carefully.\n");
+	printf(" > Liftoff! NASA has spent 1252780 engineer-hours to send you on a one-way 9-month Hohmann transfer mission to Mars. Getting there (after your initial burn) should be easy; getting there in one piece may be hard. Manage your resources carefully.\n");
 	printf("\n");
 	printf(" > Press enter to continue... ");
 }
