@@ -472,32 +472,44 @@ bool is_state_alive(Gamestate *state) {
 bool is_game_over(Gamestate *state) {
 	// food ran out
 	if (state->food <= 0) {
-		printf("crew withered away n died :(. The end.\n");
+		printf("\n");
+		printf(" > The crew turned to cannibalism when the canned tuna ran out. It wasn't enough. Your incompetence has caused everyone to starve to death. The end.\n");
+		printf("\n");
 		return true;
 
 	// morale ran out
 	} else if (state->morale <= 0) {
-		printf("you became very unpopular. crew snacked on your liver. The end.\n");
+		printf("\n");
+		printf(" > You asked if there was any coffee left and they tied you to the kitchen chair. Your crew is now raiding the pantry and smearing shit on the walls. Your cries for help go unanswered; morale is gone. The end.\n");
+		printf("\n");
 		return true;
 
 	// bad ending; no fuel when you get to mars
 	} else if (state->fuel <= 0 && state->month >= 10) {
-		printf("with no fuel on board, you've left nothing in the tank to land. you smash into the planet mars at 12,345 mph and are instantly atomized. The end.\n");
+		printf("\n");
+		printf(" > With no fuel on board, you can't maneuver or decelerate as the ship hurtles towards the planet Mars. You smash into the cold rock and are instantly pulverized. A bloodied finger sails over the martian horizon and disappears. The end.\n");
+		printf("\n");
 		return true;
 
 	// bad ending: no pilot when you get to mars
 	} else if (state->pilot <= 0 && state->month >= 10) {
-		printf("did you really think you could land the ship?? without a pilot, you fiddle around with the engine controls but smash helplessly into the surface.\n");
+		printf("\n");
+		printf(" > All of the ship controls look like hieroglyphs to you. You weren't trained to land the ship! Without the pilot, you helplessly jam buttons and pull levers as the ship jerks around. You smash into the cold rock and are instantly pulverized. A bloodied finger sails over the martian horizon and disappears. The end.\n");
+		printf("\n");
 		return true;
 	
 	// secret ending
 	} else if (state->tires >= 1 && state->month >= 10) {
-		printf("You safely touch down on the planet Mars! A martian farmer saunters up to you: i'll trade you 5000 acres for that tire. You did good.\n");
+		printf("\n");
+		printf(" > You safely touch down on the planet Mars! A martian farmer saunters up to you and shoves a contract into your gloved hands, greedily eyeing your tire. Confused, you foolishly sign. He snatches both the paper and the tire, hightailing it back to a large glass biodome in the distance. 10,000,000 credits are deposited into your personal bank account. The end.\n");
+		printf("\n");
 		return true;
 
 	// good ending
 	} else if (state->month >= 10) {
-		printf("You safely touch down on the planet Mars! You become national heroes back at home. Fortunately, you're not back at home.\n");
+		printf("\n");
+		printf(" > You safely touch down on the planet Mars! You become national heroes back at home. Fortunately, you're not back at home. The end.\n");
+		printf("\n");
 		return true;
 	}
 
