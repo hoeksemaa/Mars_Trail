@@ -106,7 +106,7 @@ void greeting() {
 	printf("\n");
 	printf(" > Liftoff! NASA has sent you on a one-way 9-month Hohmann transfer mission to Mars. Getting there (after your initial burn) should be easy; getting there in one piece may be hard. Manage your resources carefully.\n");
 	printf("\n");
-	printf(" > Please hit enter to continue... ");
+	printf(" > Press enter to continue... ");
 }
 
 void print_state_attributes(Gamestate *state) {
@@ -116,10 +116,10 @@ void print_state_attributes(Gamestate *state) {
 	printf(" > Ship Condition:\n");
 	printf(" >	Fuel:       %*d\n", MAX_WIDTH, state->fuel);
 	printf(" >	Shields:    %*d\n", MAX_WIDTH, state->shields);
-	printf(" >	Crystals:   %*d\n", MAX_WIDTH, state->crystals);
 	printf(" >\n");
 	printf(" > Inventory:\n");
 	printf(" >	Food:       %*d\n", MAX_WIDTH, state->food);
+	printf(" >      Crystals:   %*d\n", MAX_WIDTH, state->crystals);
 	printf(" >	Morale:     %*d\n", MAX_WIDTH, state->morale);
 	printf(" >	Cigarettes: %*d\n", MAX_WIDTH, state->cigarettes);
 	printf(" >	Tires:      %*d\n", MAX_WIDTH, state->tires);
@@ -136,7 +136,8 @@ void print_state_attributes(Gamestate *state) {
 void apply_choice(Gamestate *state, Event* current_event, int user_choice) {
 	Choice *choice = &current_event->choices[user_choice - 1];
 
-	printf(" > \n%s\n", choice->result);
+	printf("\n");
+	printf(" > %s\n", choice->result);
 
 	// apply the deltas to the gamestate
 	state->fuel       += choice->fuel_delta;
@@ -151,7 +152,7 @@ void apply_choice(Gamestate *state, Event* current_event, int user_choice) {
 	state->scientist  += choice->scientist_delta;
 	state->month      += choice->month_delta;
 
-	printf("\n > Press enter to continue...");
+	printf("\n > Press enter to continue... ");
 	getchar();
 	getchar();
 }
@@ -166,7 +167,7 @@ Event* initialize_events() {
 		{
 			{
 				.description = "Fight", 
-				.result = "Your shields take a hit, but you send the pirates packing after a couple well-placed blaster shots",
+				.result = "Your shields take a hit, but you send the pirates packing after a couple well-placed blaster shots.",
 				.fuel_delta = -10,
 				.food_delta = -10,
 				.shields_delta = -50,
@@ -174,7 +175,7 @@ Event* initialize_events() {
 			},
 			{
 				.description = "Flee", 
-				.result = "You burn the engines hard, narrowly missing swipes from their cutlasses and rapiers. The sad squawk of a parrot is barely audible over the commotion",
+				.result = "You burn the engines hard, narrowly missing swipes from their cutlasses and rapiers. The sad squawk of a parrot is barely audible over the commotion.",
 				.fuel_delta = -50,
 				.food_delta = -10,
                                 .month_delta = 1
@@ -203,7 +204,7 @@ Event* initialize_events() {
 			},
 			{
 				.description = "Keep flying", 
-				.result = "You've got a mission at hand; no time for fast food! You see your crew salivating.",
+				.result = "You fly away. You've got a mission at hand; no time for fast food! You see your crew salivating.",
 				.fuel_delta = -10,
 				.food_delta = -10,
 				.morale_delta = -50,
@@ -257,7 +258,7 @@ Event* initialize_events() {
 			},
 			{
 				.description = "Give him a tortilla",
-				.result = "He graciously accepts. As thanks, he adds a bit of fuel to the ship's tank and rambles about his daughter. The crew seem to enjoy talking with another human",
+				.result = "He graciously accepts. As thanks, he adds a bit of fuel to the ship's tank and rambles about his daughter. The crew seem to enjoy talking with another human.",
 				.fuel_delta = 30,
 				.food_delta = -20,
 				.morale_delta = 30,
@@ -287,21 +288,21 @@ Event* initialize_events() {
                                 .month_delta = 1
 			},
 			{
-				.description = "Call them the worst word you know.",
+				.description = "Call them the worst word you know",
 				.result = "They inform you: \"Yxour cxonduct wxill bxe rxemembered.\" as they furrow the area of their body where a brow would go. They make note of your ship's serial number and fly away. Your crew is disconcerted.",
 				.food_delta = -10,
 				.morale_delta = -20,
                                 .month_delta = 1
 			},
 			{
-				.description = "Trade them 80 crystals.",
+				.description = "Trade them 80 crystals",
 				.result = "They inform you: \"Wxe axppreciate txhe bxusiness.\" and deposit a sizeable amount of food into your ship's storage bay.",
 				.food_delta = 100,
 				.crystals_delta = -80,
                                 .month_delta = 1
 			},
 			{
-				.description = "Trade them 200 fuel.",
+				.description = "Trade them 200 fuel",
 				.result = "They inform you: \"Txhis ixs qxuite exxceptional mxaterial.\" and deposit a their most valuable object into your ship's storage bay.",
 				.fuel_delta = -200,
 				.food_delta = -10,
@@ -317,14 +318,14 @@ Event* initialize_events() {
 		.num_choices = 2,
 		{
 			{
-				.description = "Keep flying.",
+				.description = "Keep flying",
 				.result = "The crew sighs with relief. They've never seen a worm's hole either.",
 				.food_delta = -10,
 				.morale_delta = 10,
                                 .month_delta = 1
 			},
 			{
-				.description = "Fly into it.",
+				.description = "Fly into it",
 				.result = "You burn the engines while the crew screams with fear. As the wormhole engulfs you, everything goes black and you get a funny feeling.",
 				.fuel_delta = -30,
 				.food_delta = -10,
@@ -340,7 +341,7 @@ Event* initialize_events() {
 		.num_choices = 2,
 		{
 			{
-				.description = "Let the pilot die.",
+				.description = "Let the pilot die",
 				.result = "It's too late. You softly mumble \"See you, space cowboy...\" as the pilot's blood is rapidly evacuated into space.",
 				.food_delta = -10,
 				.morale_delta = -50,
@@ -348,7 +349,7 @@ Event* initialize_events() {
 				.month_delta = 1
 			},
 			{
-				.description = "Kill the doctor and harvest his blood.",
+				.description = "Kill the doctor and harvest his blood",
 				.result = "You grimace, stabbing both the pilot and the doctor with thick needles. As color returns to the pilot, the doctor withers away.",
 				.food_delta = -10,
 				.morale_delta = -10,
@@ -364,7 +365,7 @@ Event* initialize_events() {
 		.num_choices = 4,
 		{
 			{
-				.description = "Flee.",
+				.description = "Flee",
 				.result = "You crank engines to the max in a desperate attempt to flee. The agent fires a muon beam through your engine, instantly deactivating it. The IRS boards and ransacks your records.",
 				.food_delta = -10,
 				.shields_delta = -80,
@@ -372,7 +373,7 @@ Event* initialize_events() {
 				.month_delta = 1
 			},
 			{
-				.description = "Fight.",
+				.description = "Fight",
 				.result = "The agent boards your ship and you draw your NASA standard-issue S&W revolver. You shakily fire off a shot, but he ducks out of the way and backhands you into unconsciousness. The IRS ransacks your records.",
 				.food_delta = -10,
 				.morale_delta = -30,
@@ -380,7 +381,7 @@ Event* initialize_events() {
 				.month_delta = 1
 			},
 			{
-				.description = "Bribe him.",
+				.description = "Bribe him",
 				.result = "The agent board, and you put on your most sauve voice: \"I'm sure you're mistaken. I made a large contribution to the Children of IRS College Fund.\" The agent gives you a dead-eyed smile. \"That's very kind.\" The IRS ransacks your records.",
 				.food_delta = -10,
 				.morale_delta = -10,
@@ -388,7 +389,7 @@ Event* initialize_events() {
 				.month_delta = 1
 			},
 			{
-				.description = "Let him in.",
+				.description = "Let him in",
 				.result = "You sigh heavily and let him in. The IRS boards and ransacks your records.",
 				.food_delta = -10,
 				.crystals_delta = -20,
@@ -403,21 +404,21 @@ Event* initialize_events() {
 		.num_choices = 3,
 		{
 			{
-				.description = "Give him some food.",
+				.description = "Give him some food",
 				.result = "He regales the crew of tales of discovering the area now known as New York City. A bit aggravated, he insists he named the place Eriksonia. The crew loves this and refuse to use the city's modern name.",
 				.food_delta = -30,
 				.morale_delta = 60,
 				.month_delta = 1
 			},
 			{
-				.description = "Rob him.",
+				.description = "Rob him",
 				.result = "For a 1050-year-old, he puts up quite a fight! You trade blows and he soon floats away into the darkness with a black eye. You manage to swipe 10 crystals from his pocket in the tussle.",
 				.food_delta = -10,
 				.crystals_delta = 10,
 				.month_delta = 1
 			},
 			{
-				.description = "Keep on flying.",
+				.description = "Keep on flying",
 				.result = "Your crew looks aghast that you're leaving a fellow human in the dust. Weirdly, they don't question how he's lived that long.",
 				.food_delta = -10,
 				.morale_delta = -20,
@@ -454,7 +455,7 @@ int get_user_choice(Event* event) {
 	}
 
 	printf("\n");
-	printf(" > Enter your choice: ");
+	printf(" > Enter a number to make your choice: ");
 	scanf("%d", &user_choice);
 
 	return user_choice;
