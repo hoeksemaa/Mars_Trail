@@ -45,10 +45,15 @@ typedef struct {
 	Choice choices[MAX_CHOICES];
 } Event;
 
+typedef struct {
+	int available_indices[MAX_EVENTS];
+	int count;
+} AvailableEvents;
+
 void greeting();
 void print_state_attributes(Gamestate *state);
 Event* initialize_events();
-Event* get_random_event(Event* events, int num_events, bool used_events[]);
+Event* get_random_event(Event* events, AvailableEvents* available);
 int get_user_choice(Event* event);
 void apply_choice(Gamestate *state, Event* current_event, int user_choice);
 bool is_game_over(Gamestate *state);
@@ -72,11 +77,17 @@ int main(int argc, char *argv[]) {
 	// game setup
 	Gamestate state = {100, 100, 100, 100, 0, 100, 0, 1, 1, 1, 1};
 	Event* events = initialize_events();
-	bool used_events[MAX_EVENTS] = {false};
 	int num_events = 9;
 	int user_choice;
 	Event* current_event;
-	
+
+	//init available events
+	AvailableEvents available = {0};
+	for (int i = 0; i < num_events; i++) {
+		available.available_indices[i] = i;
+	}
+	available.count = num_events;
+
 	// beginning
 	system("clear");
 	greeting();
@@ -89,7 +100,7 @@ int main(int argc, char *argv[]) {
 
 		print_state_attributes(&state);
 		
-		current_event = get_random_event(events, num_events, used_events);
+		current_event = get_random_event(events, &available);
 		
 		user_choice = get_user_choice(current_event);
 		apply_choice(&state, current_event, user_choice);
@@ -104,7 +115,7 @@ int main(int argc, char *argv[]) {
 
 void greeting() {
 	printf("\n");
-	printf(" > Liftoff! NASA has spent 1252780 engineer-hours to send you on a one-way 9-month Hohmann transfer mission to Mars. Getting there (after your initial burn) should be easy; getting there in one piece may be hard. Manage your resources carefully.\n");
+	printf(" > Liftoff! NASA has spent 1252786 engineer-hours to send you on a one-way 9-month Hohmann transfer mission to Mars. Getting there (after your initial burn) should be easy; getting there in one piece may be hard. Manage your resources carefully.\n");
 	printf("\n");
 	printf(" > Press enter to continue... ");
 }
@@ -412,9 +423,10 @@ Event* initialize_events() {
 			},
 			{
 				.description = "Rob him",
-				.result = "For a 1050-year-old, he puts up quite a fight! You trade blows and he soon floats away into the darkness with a black eye. You manage to swipe 10 crystals from his pocket in the tussle.",
+				.result = "For a 1050-year-old, he puts up quite a fight! You trade blows and he soon floats away into the darkness with a black eye. Your crew is horrified by your senseless violence, but you manage to swipe 10 crystals from his pocket in the tussle.",
 				.food_delta = -10,
 				.crystals_delta = 10,
+				.morale_delta = -50,
 				.month_delta = 1
 			},
 			{
@@ -430,15 +442,20 @@ Event* initialize_events() {
 	return game_events;
 }
 
-Event* get_random_event(Event* events, int num_events, bool used_events[]) {
-	int idx = rand() % num_events;
-	
-	// if the event has already been used, pick another one
-	while (used_events[idx] == true) { idx = rand() % num_events; }
-	
-	used_events[idx] = true;
+Event* get_random_event(Event* events, AvailableEvents* available) {
+	if (available->count == 0) {
+		return NULL;
+	}
 
-	return &events[idx];
+	int random_idx = rand() % available->count;
+	int event_idx = available->available_indices[random_idx];
+
+	// overwrite the index with the last element
+	// if random_idx == available->count - 1, the count-- lowers the valid range and takes the index out of the pool
+	available->available_indices[random_idx] = available->available_indices[available->count - 1];
+	available->count--;
+
+	return &events[event_idx];
 }
 
 int get_user_choice(Event* event) {
