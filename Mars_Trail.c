@@ -165,7 +165,6 @@ void apply_choice(Gamestate *state, Event* current_event, int user_choice) {
 
 	printf("\n > Press enter to continue... ");
 	getchar();
-	getchar();
 }
 
 Event* initialize_events() {
@@ -473,17 +472,33 @@ int get_user_choice(Event* event) {
 
 	printf("\n");
 	printf(" > Enter a number to make your choice: ");
-	scanf("%d", &user_choice);
+	
+	// get user input
+	// repeat until valid input
+	char input_buffer[100];
+	while (1) {
+		if (fgets(input_buffer, sizeof(input_buffer), stdin) != NULL) {
+			// successfully read a line
+			if (sscanf(input_buffer, "%d", &user_choice) == 1) {
+				//successfully parsed integer
+				if (user_choice >= 1 && user_choice <= event->num_choices) {
+					// valid choice
+					break;
+				} else {	
+					// outside range
+					printf(" > Please enter a number between 1 and %d: ", event->num_choices);
+				}
+			} else {	
+				// failed to parse integer
+				printf(" > Invalid input. Please enter a number between 1 and %d: ", event->num_choices);
+			}
+		} else {
+			// fgets failed
+			printf(" > Error reading input. Please try again: ");
+		}
+	}
 
 	return user_choice;
-}
-
-bool is_state_alive(Gamestate *state) {
-	if (state->shields < 0) {
-		return false;
-	} else {
-		return true;
-	}
 }
 
 bool is_game_over(Gamestate *state) {
