@@ -255,7 +255,7 @@ Event* initialize_events() {
 
 	game_events[3] = (Event){
 		.title = "PLUG'S BUTT-UGLY FUEL TANKER",
-		.description = "An old man with a white handlebar mustasche in an 18-wheeler fuel truck pulls up next to you. \"Ih've been movin this cargo for 3 weeks straight naw. Got anythin to take tha edge off?\"",
+		.description = "An old man with a white handlebar mustache in an 18-wheeler fuel truck pulls up next to you. \"Ih've been movin this cargo for 3 weeks straight naw. Got anythin to take tha edge off?\"",
 		.num_choices = 3,
 		{
 			{
