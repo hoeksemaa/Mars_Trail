@@ -45,10 +45,15 @@ typedef struct {
 	Choice choices[MAX_CHOICES];
 } Event;
 
+typedef struct {
+	int available_indices[MAX_EVENTS];
+	int count;
+} AvailableEvents;
+
 void greeting();
 void print_state_attributes(Gamestate *state);
 Event* initialize_events();
-Event* get_random_event(Event* events, int num_events);
+Event* get_random_event(Event* events, AvailableEvents* available);
 int get_user_choice(Event* event);
 void apply_choice(Gamestate *state, Event* current_event, int user_choice);
 bool is_game_over(Gamestate *state);
@@ -68,32 +73,38 @@ int main(int argc, char *argv[]) {
 	}
 
 	srand(seed);
-	printf("using seed: %d\n", seed);
 
-	// gameplay
+	// game setup
 	Gamestate state = {100, 100, 100, 100, 0, 100, 0, 1, 1, 1, 1};
 	Event* events = initialize_events();
 	int num_events = 9;
 	int user_choice;
 	Event* current_event;
-	
-	greeting();
 
+	//init available events
+	AvailableEvents available = {0};
+	for (int i = 0; i < num_events; i++) {
+		available.available_indices[i] = i;
+	}
+	available.count = num_events;
+
+	// beginning
+	system("clear");
+	greeting();
+	getchar();
+
+	// main gameloop
 	while (state.month < 10) {
 
-		//system("clear");
-		printf("It's month %d\n", state.month);
+		system("clear");
 
 		print_state_attributes(&state);
 		
-		current_event = get_random_event(events, num_events);
+		current_event = get_random_event(events, &available);
 		
-		printf("EVENT: %s\n", current_event->title);
-		printf("%s", current_event->description);
-
 		user_choice = get_user_choice(current_event);
 		apply_choice(&state, current_event, user_choice);
-
+		
 		if (is_game_over(&state) == true) {
 			break;
 		}
@@ -103,27 +114,41 @@ int main(int argc, char *argv[]) {
 }
 
 void greeting() {
-	printf("Liftoff! NASA has sent you on a one-way 9-month Hohmann transfer mission to Mars. Getting there (after your initial burn) should be easy; getting there in one piece may be hard. Manage your resources carefully.\n");
+	printf("\n");
+	printf(" > Liftoff! NASA has spent 1252786 engineer-hours to send you on a one-way 9-month Hohmann transfer mission to Mars. Getting there (after your initial burn) should be easy; getting there in one piece may be hard. Manage your resources carefully.\n");
+	printf("\n");
+	printf(" > Press enter to continue... ");
 }
 
 void print_state_attributes(Gamestate *state) {
-	printf("Gamestate Status:\n");
-	printf("	Fuel:       %*d\n", MAX_WIDTH, state->fuel);
-	printf("	Food:       %*d\n", MAX_WIDTH, state->food);
-	printf("	Shields:    %*d\n", MAX_WIDTH, state->shields);
-	printf("        Crystals:   %*d\n", MAX_WIDTH, state->crystals);
-	printf("        Cigarettes: %*d\n", MAX_WIDTH, state->cigarettes);
-	printf("        Morale:     %*d\n", MAX_WIDTH, state->morale);
-	printf("        Tires:      %*d\n", MAX_WIDTH, state->tires);
-	printf("        Pilot:      %*d\n", MAX_WIDTH, state->pilot);
-	printf("        Doctor:     %*d\n", MAX_WIDTH, state->doctor);
-	printf("        Scientist:  %*d\n", MAX_WIDTH, state->scientist);
+	printf("\n");
+	printf(" > The ships's internal computer reports that today is month %d.\n", state->month);
+	printf("\n");
+	printf(" > Ship Condition:\n");
+	printf(" >	Fuel:       %*d\n", MAX_WIDTH, state->fuel);
+	printf(" >	Shields:    %*d\n", MAX_WIDTH, state->shields);
+	printf(" >\n");
+	printf(" > Inventory:\n");
+	printf(" >	Food:       %*d\n", MAX_WIDTH, state->food);
+	printf(" >      Crystals:   %*d\n", MAX_WIDTH, state->crystals);
+	printf(" >	Morale:     %*d\n", MAX_WIDTH, state->morale);
+	printf(" >	Cigarettes: %*d\n", MAX_WIDTH, state->cigarettes);
+	printf(" >	Tires:      %*d\n", MAX_WIDTH, state->tires);
+	printf(" >\n");
+	printf(" > Crew:\n");
+	printf(" >	Pilot:      %*d\n", MAX_WIDTH, state->pilot);
+	printf(" >	Doctor:     %*d\n", MAX_WIDTH, state->doctor);
+	printf(" >	Scientist:  %*d\n", MAX_WIDTH, state->scientist);
+	printf("\n");
+	printf(" > -----------------------------------------------------------------\n");
+	printf("\n");
 }
 
 void apply_choice(Gamestate *state, Event* current_event, int user_choice) {
 	Choice *choice = &current_event->choices[user_choice - 1];
 
-	printf("\n%s\n", choice->result);
+	printf("\n");
+	printf(" > %s\n", choice->result);
 
 	// apply the deltas to the gamestate
 	state->fuel       += choice->fuel_delta;
@@ -137,6 +162,9 @@ void apply_choice(Gamestate *state, Event* current_event, int user_choice) {
 	state->doctor     += choice->doctor_delta;
 	state->scientist  += choice->scientist_delta;
 	state->month      += choice->month_delta;
+
+	printf("\n > Press enter to continue... ");
+	getchar();
 }
 
 Event* initialize_events() {
@@ -144,22 +172,22 @@ Event* initialize_events() {
 
 	game_events[0] = (Event){
 		.title = "PIRATES",
-		.description = "Pirates spot your ship! They raise a black flag (it doesn't flutter), draw their blades, and burn towards your location.\n",
+		.description = "Pirates spot your ship! They raise a black flag (it doesn't flutter), draw their blades, and burn towards your location.",
 		.num_choices = 2,
 		{
 			{
 				.description = "Fight", 
-				.result = "Your shields take a hit, but you send the pirates packing after a couple well-placed blaster shots",
+				.result = "Your shields take a hit, but you send the pirates packing after a couple well-placed blaster shots.",
 				.fuel_delta = -10,
-				.food_delta = -10,
+				.food_delta = -20,
 				.shields_delta = -50,
 				.month_delta = 1
 			},
 			{
 				.description = "Flee", 
-				.result = "You burn the engines hard, narrowly missing swipes from their cutlasses and rapiers. The sad squawk of a parrot is barely audible over the commotion",
+				.result = "You burn the engines hard, narrowly missing swipes from their cutlasses and rapiers. The sad squawk of a parrot is barely audible over the commotion.",
 				.fuel_delta = -50,
-				.food_delta = -10,
+				.food_delta = -20,
                                 .month_delta = 1
 			}
 		}
@@ -167,7 +195,7 @@ Event* initialize_events() {
 
 	game_events[1] = (Event){
 		.title = "PAPA ZORB'S PIZZA",
-		.description = "You spot a rusty red shack nestled in an asteroid. A pimply alien in a red hat greets you: \"Welcome to Papa Zorb's, home of the glorpiest pizza in the galaxy. You want anything?\"\n",
+		.description = "You spot a rusty red shack nestled in an asteroid. A pimply alien in a red hat greets you: \"Welcome to Papa Zorb's, home of the glorpiest pizza in the galaxy. You want anything?\"",
 		.num_choices = 3,
 		{
 			{
@@ -186,7 +214,7 @@ Event* initialize_events() {
 			},
 			{
 				.description = "Keep flying", 
-				.result = "You've got a mission at hand; no time for fast food! You see your crew salivating.",
+				.result = "You fly away. You've got a mission at hand; no time for fast food! You see your crew salivating.",
 				.fuel_delta = -10,
 				.food_delta = -10,
 				.morale_delta = -50,
@@ -240,7 +268,7 @@ Event* initialize_events() {
 			},
 			{
 				.description = "Give him a tortilla",
-				.result = "He graciously accepts. As thanks, he adds a bit of fuel to the ship's tank and rambles about his daughter. The crew seem to enjoy talking with another human",
+				.result = "He graciously accepts. As thanks, he adds a bit of fuel to the ship's tank and rambles about his daughter. The crew seem to enjoy talking with another human.",
 				.fuel_delta = 30,
 				.food_delta = -20,
 				.morale_delta = 30,
@@ -270,21 +298,21 @@ Event* initialize_events() {
                                 .month_delta = 1
 			},
 			{
-				.description = "Call them the worst word you know.",
+				.description = "Call them the worst word you know",
 				.result = "They inform you: \"Yxour cxonduct wxill bxe rxemembered.\" as they furrow the area of their body where a brow would go. They make note of your ship's serial number and fly away. Your crew is disconcerted.",
 				.food_delta = -10,
 				.morale_delta = -20,
                                 .month_delta = 1
 			},
 			{
-				.description = "Trade them 80 crystals.",
+				.description = "Trade them 80 crystals",
 				.result = "They inform you: \"Wxe axppreciate txhe bxusiness.\" and deposit a sizeable amount of food into your ship's storage bay.",
 				.food_delta = 100,
 				.crystals_delta = -80,
                                 .month_delta = 1
 			},
 			{
-				.description = "Trade them 200 fuel.",
+				.description = "Trade them 200 fuel",
 				.result = "They inform you: \"Txhis ixs qxuite exxceptional mxaterial.\" and deposit a their most valuable object into your ship's storage bay.",
 				.fuel_delta = -200,
 				.food_delta = -10,
@@ -300,17 +328,17 @@ Event* initialize_events() {
 		.num_choices = 2,
 		{
 			{
-				.description = "Keep flying.",
+				.description = "Keep flying",
 				.result = "The crew sighs with relief. They've never seen a worm's hole either.",
 				.food_delta = -10,
 				.morale_delta = 10,
                                 .month_delta = 1
 			},
 			{
-				.description = "Fly into it.",
+				.description = "Fly into it",
 				.result = "You burn the engines while the crew screams with fear. As the wormhole engulfs you, everything goes black and you get a funny feeling.",
 				.fuel_delta = -30,
-				.food_delta = -10,
+				.food_delta = -20,
 				.morale_delta = -20,
 				.month_delta = 3
 			}
@@ -319,21 +347,23 @@ Event* initialize_events() {
 
 	game_events[6] = (Event){
 		.title = "SNAKE",
-		.description = "The pilot has suited up in his EVA suit and is changing the spacestate's flat tire. Suddenly, a snake rushes out of the darkness and sinks its teeth into the pilot's ankle! The pilot is beginning to bleed out...",
+		.description = "You notice air hissing out of one of the ship's tires. The pilot dons an EVA suit with practiced, fluid motions. He's done this a million times. He used to be a trucker operating out of the Enceladus corridor. As he slips the lug wrench over a nut, a snake slithers out of the galactic darkness and sinks its teeth into his ankle.  The pilot is rapidly losing blood.",
 		.num_choices = 2,
 		{
 			{
-				.description = "Let the pilot die. There's no way to save him",
-				.result = "seeya later space cowboy",
-				.food_delta = -10,
+				.description = "Let the pilot die",
+				.result = "It's too late. He softly mumbles \"See you, space cowboy...\" as his blood is rapidly evacuated into space.",
+				.food_delta = -20,
 				.morale_delta = -50,
+				.pilot_delta = -1,
 				.month_delta = 1
 			},
 			{
-				.description = "Kill the doctor and give his blood to the pilot. It might stabilize him",
-				.result = "ashes to ashes, dust to dust",
-				.food_delta = -10,
+				.description = "Kill the doctor and harvest his blood",
+				.result = "You grimace, stabbing both the pilot and the doctor with thick needles. As color returns to the pilot, the doctor withers away.",
+				.food_delta = -20,
 				.morale_delta = -10,
+				.doctor_delta = -1,
 				.month_delta = 1
 			}
 		}
@@ -345,27 +375,34 @@ Event* initialize_events() {
 		.num_choices = 4,
 		{
 			{
-				.description = "We're getting out of here! Engines to max! Flee the scene.",
-				.result = "ugly death",
-				.food_delta = -10,
+				.description = "Flee",
+				.result = "You crank engines to the max in a desperate attempt to flee. The agent fires a muon beam through your engine, instantly deactivating it. The IRS boards and ransacks your records.",
+				.food_delta = -20,
+				.shields_delta = -80,
+				.crystals_delta = -20,
 				.month_delta = 1
 			},
 			{
-				.description = "I'm not going down without a fight! Draw your NASA-standard-issue S&W revolver",
-				.result = "cowboy death",
-				.food_delta = -10,
+				.description = "Fight",
+				.result = "The agent boards your ship and you draw your NASA standard-issue S&W revolver. You shakily fire off a shot, but he ducks out of the way and backhands you into unconsciousness. The IRS ransacks your records.",
+				.food_delta = -20,
+				.morale_delta = -30,
+				.crystals_delta = -20,
 				.month_delta = 1
 			},
 			{
-				.description = "I'm sure you're mistaken. Make a large contribution to the agent's child's college fund.",
-				.result = "al capone death",
+				.description = "Bribe him",
+				.result = "The agent board, and you put on your most sauve voice: \"I'm sure you're mistaken. I made a large contribution to the Children of IRS College Fund.\" The agent gives you a dead-eyed smile. \"That's very kind.\" The IRS ransacks your records.",
 				.food_delta = -10,
+				.morale_delta = -10,
+				.crystals_delta = -20,
 				.month_delta = 1
 			},
 			{
-				.description = "Sigh heavily. Let them in.",
-				.result = "normal old death",
+				.description = "Let him in",
+				.result = "You sigh heavily and let him in. The IRS boards and ransacks your records.",
 				.food_delta = -10,
+				.crystals_delta = -20,
 				.month_delta = 1
 			}
 		}
@@ -373,25 +410,29 @@ Event* initialize_events() {
 
 	game_events[8] = (Event){
 		.title = "LEIF ERIKSON",
-		.description = "You find famed explorer Leif Erikson drifting through space, alive and kicking at the ripe age of 1050 years old. He looks up from studying a star map. \"I'm famished! Got anything to eat?\" You notice he's circled a portion of his map and labelled it \"Fuel cloud\"",
+		.description = "You find famed explorer Leif Erikson drifting through space, alive and kicking at the ripe age of 1050 years old. He looks up from studying a star map. \"I'm famished! Got anything to eat?\" You notice his pockets bulge.",
 		.num_choices = 3,
 		{
 			{
-				.description = "Give him some food. He's probably got some crazy stories",
-				.result = "lemme tell you about the time i fought the britains",
-				.food_delta = -10,
+				.description = "Give him some food",
+				.result = "He regales the crew of tales of discovering the area now known as New York City. A bit aggravated, he insists he named the place Eriksonia. The crew loves this and refuse to use the city's modern name.",
+				.food_delta = -30,
+				.morale_delta = 60,
 				.month_delta = 1
 			},
 			{
-				.description = "Track down this fuel cloud",
-				.result = "huffing fuel XD",
+				.description = "Rob him",
+				.result = "For a 1050-year-old, he puts up quite a fight! You trade blows and he soon floats away into the darkness with a black eye. Your crew is horrified by your senseless violence, but you manage to swipe 10 crystals from his pocket in the tussle.",
 				.food_delta = -10,
+				.crystals_delta = 10,
+				.morale_delta = -50,
 				.month_delta = 1
 			},
 			{
-				.description = "Ignore him. He weirds me out",
-				.result = "fuckn jerk",
+				.description = "Keep on flying",
+				.result = "Your crew looks aghast that you're leaving a fellow human in the dust. Weirdly, they don't question how he's lived that long.",
 				.food_delta = -10,
+				.morale_delta = -20,
 				.month_delta = 1
 			}
 		}
@@ -400,62 +441,107 @@ Event* initialize_events() {
 	return game_events;
 }
 
-Event* get_random_event(Event* events, int num_events) {
-	int idx = rand() % num_events;
-	return &events[idx];
+Event* get_random_event(Event* events, AvailableEvents* available) {
+	if (available->count == 0) {
+		return NULL;
+	}
+
+	int random_idx = rand() % available->count;
+	int event_idx = available->available_indices[random_idx];
+
+	// overwrite the index with the last element
+	// if random_idx == available->count - 1, the count-- lowers the valid range and takes the index out of the pool
+	available->available_indices[random_idx] = available->available_indices[available->count - 1];
+	available->count--;
+
+	return &events[event_idx];
 }
 
 int get_user_choice(Event* event) {
 	int user_choice;
 
-	printf("What do you want to do?\n");
+	printf(" > %s\n", event->title);
+	printf("\n");
+	printf(" > %s\n", event->description);
+	printf("\n");
+
+	printf(" > What do you want to do?\n");
 	for (int i = 0; i < event->num_choices; i++) {
-		printf("%d. %s\n", 1 + i, event->choices[i].description);
+		printf(" > %d. %s\n", 1 + i, event->choices[i].description);
 	}
 
-	printf("Enter your choice: ");
-	scanf("%d", &user_choice);
+	printf("\n");
+	printf(" > Enter a number to make your choice: ");
+	
+	// get user input
+	// repeat until valid input
+	char input_buffer[100];
+	while (1) {
+		if (fgets(input_buffer, sizeof(input_buffer), stdin) != NULL) {
+			// successfully read a line
+			if (sscanf(input_buffer, "%d", &user_choice) == 1) {
+				//successfully parsed integer
+				if (user_choice >= 1 && user_choice <= event->num_choices) {
+					// valid choice
+					break;
+				} else {	
+					// outside range
+					printf(" > Please enter a number between 1 and %d: ", event->num_choices);
+				}
+			} else {	
+				// failed to parse integer
+				printf(" > Invalid input. Please enter a number between 1 and %d: ", event->num_choices);
+			}
+		} else {
+			// fgets failed
+			printf(" > Error reading input. Please try again: ");
+		}
+	}
 
 	return user_choice;
-}
-
-bool is_state_alive(Gamestate *state) {
-	if (state->shields < 0) {
-		return false;
-	} else {
-		return true;
-	}
 }
 
 bool is_game_over(Gamestate *state) {
 	// food ran out
 	if (state->food <= 0) {
-		printf("crew withered away n died :(. The end.\n");
+		printf("\n");
+		printf(" > The crew turned to cannibalism when the canned tuna ran out. It wasn't enough. Your incompetence has caused everyone to starve to death. The end.\n");
+		printf("\n");
 		return true;
 
 	// morale ran out
 	} else if (state->morale <= 0) {
-		printf("you became very unpopular. crew snacked on your liver. The end.\n");
+		printf("\n");
+		printf(" > You asked if there was any coffee left and they tied you to the kitchen chair. Your crew is now raiding the pantry and smearing shit on the walls. Your cries for help go unanswered; morale is gone. The end.\n");
+		printf("\n");
 		return true;
 
 	// bad ending; no fuel when you get to mars
 	} else if (state->fuel <= 0 && state->month >= 10) {
-		printf("with no fuel on board, you've left nothing in the tank to land. you smash into the planet mars at 12,345 mph and are instantly atomized. The end.\n");
+		printf("\n");
+		printf(" > The great red planet Mars comes into view. With no fuel on board, you can't maneuver or decelerate as the ship hurtles forward. You smash into the cold rock and are instantly pulverized. A bloodied finger sails over the martian horizon and disappears. The end.\n");
+		printf("\n");
 		return true;
 
 	// bad ending: no pilot when you get to mars
 	} else if (state->pilot <= 0 && state->month >= 10) {
-		printf("did you really think you could land the ship?? without a pilot, you fiddle around with the engine controls but smash helplessly into the surface.\n");
+		printf("\n");
+		printf(" > The great red planet Mars comes into view. All of the ship controls look like hieroglyphs to you. You weren't trained to land the ship! Without the pilot, you helplessly jam buttons and pull levers as the ship jerks around. You smash into the cold rock and are instantly pulverized. A bloodied finger sails over the martian horizon and disappears. The end.\n");
+		printf("\n");
 		return true;
 	
 	// secret ending
-	} else if (state->tires >= 1) {
-		printf("You safely touch down on the planet Mars! A martian farmer saunters up to you: i'll trade you 5000 acres for that tire. You did good.\n");
+	} else if (state->tires >= 1 && state->month >= 10) {
+		printf("\n");
+		printf(" > The great red planet Mars comes into view. You safely touch down on the surface! A martian farmer saunters up to you and shoves a contract into your gloved hands, greedily eyeing your tire. Confused, you foolishly sign. He snatches both the paper and the tire, hightailing it back to a large glass biodome in the distance. 10,000,000 credits are deposited into your personal bank account. The end.\n");
+		printf("\n");
 		return true;
 
 	// good ending
 	} else if (state->month >= 10) {
-		printf("You safely touch down on the planet Mars! You become national heroes back at home. Fortunately, you're not back at home.\n");
+		printf("\n");
+		printf(" > The great red planet Mars comes into view. You safely touch down on the surface! You become national heroes back at home. Fortunately, you're not back at home. The end.\n");
+		printf("\n");
 		return true;
 	}
 
