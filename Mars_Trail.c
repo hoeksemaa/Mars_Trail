@@ -327,7 +327,7 @@ Event* initialize_events() {
 
 	game_events[3] = (Event){
 		"PLUG'S BUTT-UGLY FUEL TANKER",
-		"An old man with a white handlebar mustasche in an 18-wheeler fuel truck pulls up next to you. \"I've been moving this cargo for 3 weeks straight now. Got anything to take the edge off?\"",
+		"An old man with a white handlebar mustache in an 18-wheeler fuel truck pulls up next to you. \"I've been moving this cargo for 3 weeks straight now. Got anything to take the edge off?\"",
 		3,
 		{
 			{"Sorry; supplies are tight", outcome_give_nothing},
